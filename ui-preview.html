@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A.T.M.O.S — UI Preview</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -20,8 +28,8 @@
     }
 
     .banner {
-      background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1));
-      border: 1px solid rgba(99,102,241,0.3);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.1));
+      border: 1px solid rgba(99, 102, 241, 0.3);
       border-radius: 12px;
       padding: 10px 20px;
       margin-bottom: 24px;
@@ -36,12 +44,12 @@
       height: 844px;
       background: #0A0A0C;
       border-radius: 48px;
-      border: 2px solid rgba(255,255,255,0.12);
+      border: 2px solid rgba(255, 255, 255, 0.12);
       box-shadow:
         0 0 0 6px #1a1a2e,
-        0 0 0 8px rgba(255,255,255,0.06),
-        0 40px 80px rgba(0,0,0,0.7),
-        0 0 60px rgba(99,102,241,0.08);
+        0 0 0 8px rgba(255, 255, 255, 0.06),
+        0 40px 80px rgba(0, 0, 0, 0.7),
+        0 0 60px rgba(99, 102, 241, 0.08);
       position: relative;
       overflow: hidden;
       display: flex;
@@ -64,8 +72,21 @@
       justify-content: center;
       gap: 6px;
     }
-    .notch-cam { width: 10px; height: 10px; border-radius: 50%; background: #1e1e2e; border: 1px solid #333; }
-    .notch-mic { width: 30px; height: 4px; border-radius: 2px; background: #1e1e2e; }
+
+    .notch-cam {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1e1e2e;
+      border: 1px solid #333;
+    }
+
+    .notch-mic {
+      width: 30px;
+      height: 4px;
+      border-radius: 2px;
+      background: #1e1e2e;
+    }
 
     /* Status bar */
     .status-bar {
@@ -77,9 +98,23 @@
       flex-shrink: 0;
       z-index: 50;
     }
-    .status-time { color: #fff; font-size: 13px; font-weight: 600; }
-    .status-icons { display: flex; gap: 6px; align-items: center; }
-    .status-icons span { color: #fff; font-size: 11px; }
+
+    .status-time {
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .status-icons span {
+      color: #fff;
+      font-size: 11px;
+    }
 
     /* Screen container */
     .screen {
@@ -88,7 +123,11 @@
       position: relative;
       display: none;
     }
-    .screen.active { display: flex; flex-direction: column; }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+    }
 
     .screen-scroll {
       flex: 1;
@@ -96,7 +135,10 @@
       padding: 20px 20px 120px;
       scrollbar-width: none;
     }
-    .screen-scroll::-webkit-scrollbar { display: none; }
+
+    .screen-scroll::-webkit-scrollbar {
+      display: none;
+    }
 
     /* ===== SPLASH SCREEN ===== */
     #splash {
@@ -105,27 +147,40 @@
       align-items: center;
       gap: 0;
     }
+
     .splash-glow {
       position: absolute;
       width: 260px;
       height: 260px;
-      background: radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
       top: 50%;
       left: 50%;
       transform: translate(-50%, -60%);
       border-radius: 50%;
       animation: pulse 2s ease-in-out infinite;
     }
+
     @keyframes pulse {
-      0%, 100% { opacity: 0.6; transform: translate(-50%, -60%) scale(1); }
-      50% { opacity: 1; transform: translate(-50%, -60%) scale(1.1); }
+
+      0%,
+      100% {
+        opacity: 0.6;
+        transform: translate(-50%, -60%) scale(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -60%) scale(1.1);
+      }
     }
+
     .splash-icon {
       font-size: 64px;
       margin-bottom: 24px;
       z-index: 1;
       animation: pulse 2s ease-in-out infinite;
     }
+
     .splash-title {
       font-size: 30px;
       font-weight: 900;
@@ -133,6 +188,7 @@
       letter-spacing: 4px;
       z-index: 1;
     }
+
     .splash-subtitle {
       font-size: 11px;
       font-weight: 600;
@@ -141,6 +197,7 @@
       margin-top: 6px;
       z-index: 1;
     }
+
     .splash-loading {
       display: flex;
       flex-direction: column;
@@ -149,15 +206,27 @@
       margin-top: 60px;
       z-index: 1;
     }
+
     .spinner {
-      width: 32px; height: 32px;
-      border: 3px solid rgba(99,102,241,0.2);
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(99, 102, 241, 0.2);
       border-top: 3px solid #6366F1;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .splash-loading-text { color: #9CA3AF; font-size: 13px; }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .splash-loading-text {
+      color: #9CA3AF;
+      font-size: 13px;
+    }
+
     .splash-footer {
       position: absolute;
       bottom: 36px;
@@ -168,7 +237,10 @@
     }
 
     /* ===== HOME SCREEN ===== */
-    #home { background: #0F172A; }
+    #home {
+      background: #0F172A;
+    }
+
     .home-header {
       display: flex;
       justify-content: space-between;
@@ -176,24 +248,58 @@
       margin-bottom: 28px;
       padding-top: 8px;
     }
-    .home-title { font-size: 26px; font-weight: 800; color: #fff; }
-    .home-subtitle { font-size: 13px; color: #818CF8; margin-top: 2px; }
+
+    .home-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .home-subtitle {
+      font-size: 13px;
+      color: #818CF8;
+      margin-top: 2px;
+    }
+
     .sync-badge {
-      background: rgba(16,185,129,0.15);
-      border: 1px solid rgba(16,185,129,0.3);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
       border-radius: 20px;
       padding: 6px 12px;
       display: flex;
       align-items: center;
       gap: 5px;
     }
-    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #10B981; animation: blink 1.5s ease-in-out infinite; }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-    .sync-badge-text { font-size: 10px; font-weight: 700; color: #10B981; }
+
+    .sync-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    .sync-badge-text {
+      font-size: 10px;
+      font-weight: 700;
+      color: #10B981;
+    }
 
     .card {
-      background: rgba(30,41,59,0.45);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 22px;
       padding: 22px;
       margin-bottom: 16px;
@@ -201,17 +307,36 @@
       transition: transform 0.15s, border-color 0.15s, background 0.15s;
       backdrop-filter: blur(10px);
     }
-    .card:hover { transform: scale(1.02); background: rgba(30,41,59,0.7); }
-    .card:active { transform: scale(0.98); }
+
+    .card:hover {
+      transform: scale(1.02);
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    .card:active {
+      transform: scale(0.98);
+    }
 
     .card.auth-card {
-      border-color: rgba(99,102,241,0.35);
-      background: rgba(99,102,241,0.08);
+      border-color: rgba(99, 102, 241, 0.35);
+      background: rgba(99, 102, 241, 0.08);
     }
-    .card.auth-card:hover { background: rgba(99,102,241,0.15); }
 
-    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .card-emoji { font-size: 30px; }
+    .card.auth-card:hover {
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-emoji {
+      font-size: 30px;
+    }
+
     .offline-badge {
       background: #6366F1;
       color: #fff;
@@ -221,18 +346,42 @@
       padding: 3px 8px;
       border-radius: 10px;
     }
-    .card-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .card-desc { font-size: 12px; color: #94A3B8; line-height: 1.5; }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: #94A3B8;
+      line-height: 1.5;
+    }
 
     .sync-card {
-      background: rgba(15,23,42,0.6);
-      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
       border-radius: 18px;
       padding: 18px;
       margin-top: 4px;
     }
-    .sync-card-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .sync-card-desc { font-size: 11px; color: #94A3B8; line-height: 1.5; margin-bottom: 14px; }
+
+    .sync-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .sync-card-desc {
+      font-size: 11px;
+      color: #94A3B8;
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+
     .sync-btn {
       background: #6366F1;
       border: none;
@@ -246,11 +395,20 @@
       cursor: pointer;
       transition: opacity 0.15s, transform 0.1s;
     }
-    .sync-btn:hover { opacity: 0.85; }
-    .sync-btn:active { transform: scale(0.98); }
+
+    .sync-btn:hover {
+      opacity: 0.85;
+    }
+
+    .sync-btn:active {
+      transform: scale(0.98);
+    }
 
     /* ===== AUTH SCREEN ===== */
-    #auth { background: #0F172A; }
+    #auth {
+      background: #0F172A;
+    }
+
     .tab-bar {
       display: flex;
       background: #1E293B;
@@ -259,6 +417,7 @@
       margin: 12px 20px 0;
       flex-shrink: 0;
     }
+
     .tab-btn {
       flex: 1;
       border: none;
@@ -272,7 +431,11 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .tab-btn.active { background: #334155; color: #fff; }
+
+    .tab-btn.active {
+      background: #334155;
+      color: #fff;
+    }
 
     .camera-view {
       flex: 1;
@@ -285,6 +448,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .camera-feed {
       position: absolute;
       inset: 0;
@@ -294,19 +458,29 @@
       justify-content: center;
       flex-direction: column;
     }
+
     .face-oval {
       width: 160px;
       height: 200px;
       border: 2.5px solid #6366F1;
       border-radius: 50%;
       position: relative;
-      box-shadow: 0 0 20px rgba(99,102,241,0.4), inset 0 0 20px rgba(99,102,241,0.05);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4), inset 0 0 20px rgba(99, 102, 241, 0.05);
       animation: scanPulse 2s ease-in-out infinite;
     }
+
     @keyframes scanPulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,0.4), inset 0 0 20px rgba(99,102,241,0.05); }
-      50% { box-shadow: 0 0 35px rgba(99,102,241,0.7), inset 0 0 30px rgba(99,102,241,0.1); }
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.4), inset 0 0 20px rgba(99, 102, 241, 0.05);
+      }
+
+      50% {
+        box-shadow: 0 0 35px rgba(99, 102, 241, 0.7), inset 0 0 30px rgba(99, 102, 241, 0.1);
+      }
     }
+
     .scan-line {
       position: absolute;
       width: 100%;
@@ -315,69 +489,165 @@
       top: 0;
       animation: scanMove 2s linear infinite;
     }
+
     @keyframes scanMove {
-      0% { top: 0; opacity: 1; }
-      100% { top: 100%; opacity: 0.3; }
+      0% {
+        top: 0;
+        opacity: 1;
+      }
+
+      100% {
+        top: 100%;
+        opacity: 0.3;
+      }
     }
+
     .corner-mark {
       position: absolute;
-      width: 16px; height: 16px;
+      width: 16px;
+      height: 16px;
       border-color: #818CF8;
       border-style: solid;
     }
-    .corner-mark.tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
-    .corner-mark.tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; }
-    .corner-mark.bl { bottom: 10px; left: 10px; border-width: 0 0 2px 2px; }
-    .corner-mark.br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
+
+    .corner-mark.tl {
+      top: 10px;
+      left: 10px;
+      border-width: 2px 0 0 2px;
+    }
+
+    .corner-mark.tr {
+      top: 10px;
+      right: 10px;
+      border-width: 2px 2px 0 0;
+    }
+
+    .corner-mark.bl {
+      bottom: 10px;
+      left: 10px;
+      border-width: 0 0 2px 2px;
+    }
+
+    .corner-mark.br {
+      bottom: 10px;
+      right: 10px;
+      border-width: 0 2px 2px 0;
+    }
 
     .liveness-label {
       position: absolute;
       bottom: 16px;
-      left: 0; right: 0;
+      left: 0;
+      right: 0;
       text-align: center;
       color: #818CF8;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 0.5px;
     }
+
     .ear-hud {
       position: absolute;
       top: 12px;
       left: 12px;
-      background: rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 8px;
       padding: 6px 10px;
     }
-    .ear-hud-text { color: #a5b4fc; font-size: 10px; font-weight: 600; }
+
+    .ear-hud-text {
+      color: #a5b4fc;
+      font-size: 10px;
+      font-weight: 600;
+    }
 
     /* Simulator tab */
-    .sim-section { }
-    .sim-title { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; }
-    .sim-desc { font-size: 12px; color: #94A3B8; line-height: 1.5; margin-bottom: 16px; }
+    .sim-section {}
+
+    .sim-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .sim-desc {
+      font-size: 12px;
+      color: #94A3B8;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
 
     .liveness-card {
-      background: rgba(30,41,59,0.45);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 20px;
       padding: 16px;
       margin-bottom: 16px;
     }
-    .liveness-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-    .liveness-label-text { font-size: 11px; font-weight: 700; color: #E2E8F0; text-transform: uppercase; letter-spacing: 0.8px; }
-    .liveness-value { font-size: 20px; font-weight: 800; color: #6366F1; }
-    .bar-bg { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #6366F1, #8B5CF6); transition: width 0.3s; }
-    .bar-fill.green { background: linear-gradient(90deg, #10B981, #34D399); }
+
+    .liveness-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .liveness-label-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: #E2E8F0;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .liveness-value {
+      font-size: 20px;
+      font-weight: 800;
+      color: #6366F1;
+    }
+
+    .bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: linear-gradient(90deg, #6366F1, #8B5CF6);
+      transition: width 0.3s;
+    }
+
+    .bar-fill.green {
+      background: linear-gradient(90deg, #10B981, #34D399);
+    }
 
     .controls-card {
-      background: rgba(30,41,59,0.45);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 20px;
       padding: 16px;
     }
-    .controls-title { font-size: 12px; font-weight: 700; color: #E2E8F0; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-    .sim-buttons { display: flex; gap: 10px; margin-bottom: 16px; }
+
+    .controls-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #E2E8F0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .sim-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
     .sim-btn {
       flex: 1;
       background: #3B82F6;
@@ -391,14 +661,39 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .sim-btn:hover { opacity: 0.85; transform: scale(1.02); }
-    .sim-btn:active { transform: scale(0.96); }
-    .sim-btn.disabled { background: #1E293B; opacity: 0.5; }
 
-    .divider { height: 1px; background: rgba(255,255,255,0.08); margin: 14px 0; }
+    .sim-btn:hover {
+      opacity: 0.85;
+      transform: scale(1.02);
+    }
 
-    .emp-scroll { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 12px; scrollbar-width: none; }
-    .emp-scroll::-webkit-scrollbar { display: none; }
+    .sim-btn:active {
+      transform: scale(0.96);
+    }
+
+    .sim-btn.disabled {
+      background: #1E293B;
+      opacity: 0.5;
+    }
+
+    .divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      margin: 14px 0;
+    }
+
+    .emp-scroll {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      scrollbar-width: none;
+    }
+
+    .emp-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
     .emp-badge {
       padding: 7px 14px;
       border-radius: 20px;
@@ -411,7 +706,11 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .emp-badge.selected { border-color: #6366F1; background: rgba(99,102,241,0.15); }
+
+    .emp-badge.selected {
+      border-color: #6366F1;
+      background: rgba(99, 102, 241, 0.15);
+    }
 
     .verify-btn {
       width: 100%;
@@ -427,26 +726,48 @@
       margin-top: 12px;
       transition: all 0.15s;
     }
-    .verify-btn:hover { opacity: 0.85; }
-    .verify-btn:active { transform: scale(0.98); }
+
+    .verify-btn:hover {
+      opacity: 0.85;
+    }
+
+    .verify-btn:active {
+      transform: scale(0.98);
+    }
 
     /* Success result overlay */
     .result-overlay {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      background: rgba(15,23,42,0.97);
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.97);
       border-top: 1px solid #334155;
       padding: 20px;
       transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
       z-index: 50;
     }
-    .result-overlay.show { transform: translateY(0); }
-    .result-header { font-size: 18px; font-weight: 800; color: #10B981; text-align: center; margin-bottom: 14px; }
-    .result-header.fail { color: #EF4444; }
+
+    .result-overlay.show {
+      transform: translateY(0);
+    }
+
+    .result-header {
+      font-size: 18px;
+      font-weight: 800;
+      color: #10B981;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .result-header.fail {
+      color: #EF4444;
+    }
+
     .employee-card {
-      background: rgba(30,41,59,0.5);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(30, 41, 59, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 16px;
       padding: 14px;
       display: flex;
@@ -454,8 +775,10 @@
       gap: 12px;
       margin-bottom: 12px;
     }
+
     .employee-avatar {
-      width: 44px; height: 44px;
+      width: 44px;
+      height: 44px;
       border-radius: 12px;
       background: linear-gradient(135deg, #6366F1, #8B5CF6);
       display: flex;
@@ -464,14 +787,58 @@
       font-size: 20px;
       flex-shrink: 0;
     }
-    .employee-name { font-size: 15px; font-weight: 700; color: #fff; }
-    .employee-role { font-size: 11px; color: #94A3B8; margin-top: 2px; }
-    .confidence-label { display: flex; justify-content: space-between; margin-bottom: 6px; }
-    .confidence-label-text { font-size: 11px; color: #94A3B8; }
-    .confidence-score { font-size: 11px; font-weight: 700; color: #10B981; }
-    .confidence-bar { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
-    .confidence-fill { height: 100%; background: linear-gradient(90deg, #10B981, #34D399); width: 88%; border-radius: 3px; }
-    .bench-text { font-size: 11px; color: #94A3B8; text-align: center; margin: 8px 0; }
+
+    .employee-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .employee-role {
+      font-size: 11px;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
+
+    .confidence-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .confidence-label-text {
+      font-size: 11px;
+      color: #94A3B8;
+    }
+
+    .confidence-score {
+      font-size: 11px;
+      font-weight: 700;
+      color: #10B981;
+    }
+
+    .confidence-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .confidence-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10B981, #34D399);
+      width: 88%;
+      border-radius: 3px;
+    }
+
+    .bench-text {
+      font-size: 11px;
+      color: #94A3B8;
+      text-align: center;
+      margin: 8px 0;
+    }
+
     .reset-btn {
       width: 100%;
       background: #334155;
@@ -485,16 +852,21 @@
       cursor: pointer;
       transition: opacity 0.15s;
     }
-    .reset-btn:hover { opacity: 0.8; }
+
+    .reset-btn:hover {
+      opacity: 0.8;
+    }
 
     /* ===== REGISTER SCREEN ===== */
-    #register { background: #0F172A; }
+    #register {
+      background: #0F172A;
+    }
 
     /* ===== BOTTOM NAV ===== */
     .bottom-nav {
       height: 80px;
-      background: rgba(15,23,42,0.95);
-      border-top: 1px solid rgba(255,255,255,0.06);
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
       display: flex;
       align-items: center;
       justify-content: space-around;
@@ -502,6 +874,7 @@
       flex-shrink: 0;
       backdrop-filter: blur(20px);
     }
+
     .nav-item {
       display: flex;
       flex-direction: column;
@@ -514,12 +887,31 @@
       border: none;
       background: transparent;
     }
-    .nav-item:hover { background: rgba(255,255,255,0.05); }
-    .nav-item.active { }
-    .nav-icon { font-size: 20px; }
-    .nav-label { font-size: 10px; font-weight: 600; color: #4B5563; font-family: 'Inter', sans-serif; }
-    .nav-item.active .nav-label { color: #6366F1; }
-    .nav-item.active .nav-icon { filter: drop-shadow(0 0 4px rgba(99,102,241,0.6)); }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-item.active {}
+
+    .nav-icon {
+      font-size: 20px;
+    }
+
+    .nav-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #4B5563;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .nav-item.active .nav-label {
+      color: #6366F1;
+    }
+
+    .nav-item.active .nav-icon {
+      filter: drop-shadow(0 0 4px rgba(99, 102, 241, 0.6));
+    }
 
     /* Misc */
     .section-header {
@@ -528,10 +920,12 @@
       gap: 10px;
       margin-bottom: 20px;
     }
+
     .back-btn {
-      width: 34px; height: 34px;
-      background: rgba(30,41,59,0.6);
-      border: 1px solid rgba(255,255,255,0.08);
+      width: 34px;
+      height: 34px;
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 10px;
       display: flex;
       align-items: center;
@@ -540,15 +934,35 @@
       font-size: 16px;
       transition: all 0.15s;
     }
-    .back-btn:hover { background: rgba(99,102,241,0.2); }
-    .section-title { font-size: 20px; font-weight: 800; color: #fff; }
 
-    .form-group { margin-bottom: 16px; }
-    .form-label { font-size: 11px; font-weight: 700; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; display: block; }
+    .back-btn:hover {
+      background: rgba(99, 102, 241, 0.2);
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94A3B8;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
     .form-input {
       width: 100%;
-      background: rgba(30,41,59,0.6);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 12px;
       padding: 12px 14px;
       color: #fff;
@@ -557,12 +971,18 @@
       outline: none;
       transition: border-color 0.15s;
     }
-    .form-input:focus { border-color: #6366F1; }
-    .form-input::placeholder { color: #4B5563; }
+
+    .form-input:focus {
+      border-color: #6366F1;
+    }
+
+    .form-input::placeholder {
+      color: #4B5563;
+    }
 
     .capture-zone {
-      background: rgba(30,41,59,0.3);
-      border: 2px dashed rgba(99,102,241,0.3);
+      background: rgba(30, 41, 59, 0.3);
+      border: 2px dashed rgba(99, 102, 241, 0.3);
       border-radius: 20px;
       padding: 32px 20px;
       text-align: center;
@@ -570,9 +990,22 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-    .capture-zone:hover { border-color: #6366F1; background: rgba(99,102,241,0.05); }
-    .capture-icon { font-size: 40px; margin-bottom: 10px; }
-    .capture-text { color: #94A3B8; font-size: 13px; line-height: 1.5; }
+
+    .capture-zone:hover {
+      border-color: #6366F1;
+      background: rgba(99, 102, 241, 0.05);
+    }
+
+    .capture-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .capture-text {
+      color: #94A3B8;
+      font-size: 13px;
+      line-height: 1.5;
+    }
 
     .primary-btn {
       width: 100%;
@@ -586,17 +1019,35 @@
       font-family: 'Inter', sans-serif;
       cursor: pointer;
       transition: all 0.15s;
-      box-shadow: 0 4px 20px rgba(99,102,241,0.3);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
     }
-    .primary-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-    .primary-btn:active { transform: translateY(0) scale(0.98); }
+
+    .primary-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .primary-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
 
     /* Settings screen */
-    .settings-group { margin-bottom: 20px; }
-    .settings-group-title { font-size: 11px; font-weight: 700; color: #6366F1; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    .settings-group {
+      margin-bottom: 20px;
+    }
+
+    .settings-group-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #6366F1;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
     .settings-item {
-      background: rgba(30,41,59,0.45);
-      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 14px;
       padding: 14px 16px;
       display: flex;
@@ -606,34 +1057,64 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .settings-item:hover { background: rgba(30,41,59,0.7); }
-    .settings-item-left { }
-    .settings-item-name { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 2px; }
-    .settings-item-value { font-size: 11px; color: #94A3B8; }
-    .settings-item-arrow { color: #4B5563; font-size: 14px; }
+
+    .settings-item:hover {
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    .settings-item-left {}
+
+    .settings-item-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .settings-item-value {
+      font-size: 11px;
+      color: #94A3B8;
+    }
+
+    .settings-item-arrow {
+      color: #4B5563;
+      font-size: 14px;
+    }
+
     .toggle {
-      width: 42px; height: 24px;
+      width: 42px;
+      height: 24px;
       background: #6366F1;
       border-radius: 12px;
       position: relative;
       cursor: pointer;
     }
+
     .toggle::after {
       content: '';
       position: absolute;
-      right: 3px; top: 3px;
-      width: 18px; height: 18px;
+      right: 3px;
+      top: 3px;
+      width: 18px;
+      height: 18px;
       background: #fff;
       border-radius: 50%;
       transition: right 0.2s;
     }
-    .toggle.off { background: #334155; }
-    .toggle.off::after { right: auto; left: 3px; }
+
+    .toggle.off {
+      background: #334155;
+    }
+
+    .toggle.off::after {
+      right: auto;
+      left: 3px;
+    }
 
     /* Attendance log */
     .log-item {
-      background: rgba(30,41,59,0.45);
-      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(30, 41, 59, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 14px;
       padding: 14px 16px;
       margin-bottom: 10px;
@@ -641,8 +1122,10 @@
       align-items: center;
       gap: 12px;
     }
+
     .log-avatar {
-      width: 38px; height: 38px;
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
       background: linear-gradient(135deg, #6366F1, #8B5CF6);
       display: flex;
@@ -651,18 +1134,47 @@
       font-size: 16px;
       flex-shrink: 0;
     }
-    .log-avatar.fail { background: linear-gradient(135deg, #EF4444, #F87171); }
-    .log-name { font-size: 13px; font-weight: 600; color: #fff; }
-    .log-time { font-size: 11px; color: #94A3B8; margin-top: 2px; }
-    .log-score { margin-left: auto; text-align: right; }
-    .log-score-val { font-size: 13px; font-weight: 700; color: #10B981; }
-    .log-score-val.fail { color: #EF4444; }
-    .log-score-label { font-size: 10px; color: #4B5563; }
+
+    .log-avatar.fail {
+      background: linear-gradient(135deg, #EF4444, #F87171);
+    }
+
+    .log-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .log-time {
+      font-size: 11px;
+      color: #94A3B8;
+      margin-top: 2px;
+    }
+
+    .log-score {
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .log-score-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: #10B981;
+    }
+
+    .log-score-val.fail {
+      color: #EF4444;
+    }
+
+    .log-score-label {
+      font-size: 10px;
+      color: #4B5563;
+    }
 
     /* Nav label */
     .page-label {
       text-align: center;
-      color: rgba(255,255,255,0.15);
+      color: rgba(255, 255, 255, 0.15);
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 1px;
@@ -670,471 +1182,532 @@
     }
   </style>
 </head>
+
 <body>
 
-<div class="banner">🔍 Interactive UI Preview — <strong>A.T.M.O.S</strong> · Autonomous Telemetry &amp; Mobile Offline Sync · Click cards to navigate</div>
+  <div class="banner">🔍 Interactive UI Preview — <strong>A.T.M.O.S</strong> · Autonomous Telemetry &amp; Mobile Offline
+    Sync · Click cards to navigate</div>
 
-<div class="phone-frame">
-  <div class="notch">
-    <div class="notch-cam"></div>
-    <div class="notch-mic"></div>
-  </div>
-
-  <!-- Status bar -->
-  <div class="status-bar">
-    <span class="status-time">9:41</span>
-    <div class="status-icons">
-      <span>▶▶</span>
-      <span>WiFi</span>
-      <span>🔋</span>
+  <div class="phone-frame">
+    <div class="notch">
+      <div class="notch-cam"></div>
+      <div class="notch-mic"></div>
     </div>
-  </div>
 
-  <!-- ===== SPLASH ===== -->
-  <div id="splash" class="screen active">
-    <div class="splash-glow"></div>
-    <div class="splash-icon">🧠</div>
-    <div class="splash-title">A.T.M.O.S</div>
-    <div class="splash-subtitle">AUTONOMOUS TELEMETRY &amp; MOBILE OFFLINE SYNC</div>
-    <div class="splash-loading">
-      <div class="spinner"></div>
-      <div class="splash-loading-text">Initializing Edge AI models...</div>
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <span>▶▶</span>
+        <span>WiFi</span>
+        <span>🔋</span>
+      </div>
     </div>
-    <div class="splash-footer">HACKATHON 7.0</div>
-  </div>
 
-  <!-- ===== HOME ===== -->
-  <div id="home" class="screen">
-    <div class="screen-scroll">
-      <div class="home-header">
-        <div>
-          <div class="home-title">A.T.M.O.S</div>
-          <div class="home-subtitle">Autonomous Telemetry &amp; Mobile Offline Sync</div>
+    <!-- ===== SPLASH ===== -->
+    <div id="splash" class="screen active">
+      <div class="splash-glow"></div>
+      <div class="splash-icon">🧠</div>
+      <div class="splash-title">A.T.M.O.S</div>
+      <div class="splash-subtitle">AUTONOMOUS TELEMETRY &amp; MOBILE OFFLINE SYNC</div>
+      <div class="splash-loading">
+        <div class="spinner"></div>
+        <div class="splash-loading-text">Initializing Edge AI models...</div>
+      </div>
+      <div class="splash-footer">HACKATHON 7.0</div>
+    </div>
+
+    <!-- ===== HOME ===== -->
+    <div id="home" class="screen">
+      <div class="screen-scroll">
+        <div class="home-header">
+          <div>
+            <div class="home-title">A.T.M.O.S</div>
+            <div class="home-subtitle">Autonomous Telemetry &amp; Mobile Offline Sync</div>
+          </div>
+          <div class="sync-badge">
+            <div class="sync-dot"></div>
+            <span class="sync-badge-text">SYNCED</span>
+          </div>
         </div>
-        <div class="sync-badge">
-          <div class="sync-dot"></div>
-          <span class="sync-badge-text">SYNCED</span>
+
+        <div class="card auth-card" onclick="showScreen('auth')">
+          <div class="card-header">
+            <div class="card-emoji">🔑</div>
+            <div class="offline-badge">OFFLINE</div>
+          </div>
+          <div class="card-title">Authenticate Face</div>
+          <div class="card-desc">Verify identity using local facial recognition and anti-spoofing challenge.</div>
+        </div>
+
+        <div class="card" onclick="showScreen('register')">
+          <div class="card-emoji">👤</div>
+          <div class="card-title">Register Employee</div>
+          <div class="card-desc">Capture face embeddings and create a baseline local profile.</div>
+        </div>
+
+        <div class="card" onclick="showScreen('logs')">
+          <div class="card-emoji">📋</div>
+          <div class="card-title">Personnel &amp; Logs</div>
+          <div class="card-desc">Manage registered employees, view attendance logs, and monitor sync status.</div>
+        </div>
+
+        <div class="card" onclick="showScreen('settings')">
+          <div class="card-emoji">⚙️</div>
+          <div class="card-title">System Settings</div>
+          <div class="card-desc">Adjust thresholds, customize environment parameters, and view diagnostic data.</div>
+        </div>
+
+        <div class="sync-card">
+          <div class="sync-card-title">Cloud Synchronization</div>
+          <div class="sync-card-desc">Pending records are automatically uploaded when a connection is established. You
+            can also trigger sync manually.</div>
+          <button class="sync-btn">Sync Attendance Logs Now</button>
         </div>
       </div>
 
-      <div class="card auth-card" onclick="showScreen('auth')">
-        <div class="card-header">
-          <div class="card-emoji">🔑</div>
-          <div class="offline-badge">OFFLINE</div>
-        </div>
-        <div class="card-title">Authenticate Face</div>
-        <div class="card-desc">Verify identity using local facial recognition and anti-spoofing challenge.</div>
-      </div>
-
-      <div class="card" onclick="showScreen('register')">
-        <div class="card-emoji">👤</div>
-        <div class="card-title">Register Employee</div>
-        <div class="card-desc">Capture face embeddings and create a baseline local profile.</div>
-      </div>
-
-      <div class="card" onclick="showScreen('logs')">
-        <div class="card-emoji">📋</div>
-        <div class="card-title">Personnel &amp; Logs</div>
-        <div class="card-desc">Manage registered employees, view attendance logs, and monitor sync status.</div>
-      </div>
-
-      <div class="card" onclick="showScreen('settings')">
-        <div class="card-emoji">⚙️</div>
-        <div class="card-title">System Settings</div>
-        <div class="card-desc">Adjust thresholds, customize environment parameters, and view diagnostic data.</div>
-      </div>
-
-      <div class="sync-card">
-        <div class="sync-card-title">Cloud Synchronization</div>
-        <div class="sync-card-desc">Pending records are automatically uploaded when a connection is established. You can also trigger sync manually.</div>
-        <button class="sync-btn">Sync Attendance Logs Now</button>
+      <div class="bottom-nav">
+        <button class="nav-item active" onclick="showScreen('home')">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-label">Home</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('auth')">
+          <span class="nav-icon">👁️</span>
+          <span class="nav-label">Auth</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('logs')">
+          <span class="nav-icon">📋</span>
+          <span class="nav-label">Logs</span>
+        </button>
+        <button class="nav-item" onclick="showScreen('settings')">
+          <span class="nav-icon">⚙️</span>
+          <span class="nav-label">Settings</span>
+        </button>
       </div>
     </div>
 
-    <div class="bottom-nav">
-      <button class="nav-item active" onclick="showScreen('home')">
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
-      </button>
-      <button class="nav-item" onclick="showScreen('auth')">
-        <span class="nav-icon">👁️</span>
-        <span class="nav-label">Auth</span>
-      </button>
-      <button class="nav-item" onclick="showScreen('logs')">
-        <span class="nav-icon">📋</span>
-        <span class="nav-label">Logs</span>
-      </button>
-      <button class="nav-item" onclick="showScreen('settings')">
-        <span class="nav-icon">⚙️</span>
-        <span class="nav-label">Settings</span>
-      </button>
-    </div>
-  </div>
+    <!-- ===== AUTH SCREEN ===== -->
+    <div id="auth" class="screen" style="position:relative;">
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-live" onclick="switchTab('live')">Live Camera Stream</button>
+        <button class="tab-btn" id="tab-sim" onclick="switchTab('sim')">Interactive Simulator</button>
+      </div>
 
-  <!-- ===== AUTH SCREEN ===== -->
-  <div id="auth" class="screen" style="position:relative;">
-    <div class="tab-bar">
-      <button class="tab-btn active" id="tab-live" onclick="switchTab('live')">Live Camera Stream</button>
-      <button class="tab-btn" id="tab-sim" onclick="switchTab('sim')">Interactive Simulator</button>
-    </div>
-
-    <!-- Live Camera tab -->
-    <div id="live-tab" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
-      <div class="camera-view" style="flex:1;margin:10px 12px;">
-        <div class="camera-feed">
-          <div style="position:relative;">
-            <div class="face-oval">
-              <div class="scan-line"></div>
-              <div class="corner-mark tl"></div>
-              <div class="corner-mark tr"></div>
-              <div class="corner-mark bl"></div>
-              <div class="corner-mark br"></div>
+      <!-- Live Camera tab -->
+      <div id="live-tab" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+        <div class="camera-view" style="flex:1;margin:10px 12px;">
+          <div class="camera-feed">
+            <div style="position:relative;">
+              <div class="face-oval">
+                <div class="scan-line"></div>
+                <div class="corner-mark tl"></div>
+                <div class="corner-mark tr"></div>
+                <div class="corner-mark bl"></div>
+                <div class="corner-mark br"></div>
+              </div>
+            </div>
+            <div style="margin-top:16px;text-align:center;">
+              <div style="color:#818CF8;font-size:12px;font-weight:600;">Please BLINK to authenticate</div>
+            </div>
+            <div class="ear-hud" style="position:absolute;top:12px;left:12px;">
+              <div class="ear-hud-text">EAR: 0.31</div>
+              <div class="ear-hud-text">MAR: 0.14</div>
             </div>
           </div>
-          <div style="margin-top:16px;text-align:center;">
-            <div style="color:#818CF8;font-size:12px;font-weight:600;">Please BLINK to authenticate</div>
+        </div>
+      </div>
+
+      <!-- Simulator tab -->
+      <div id="sim-tab" style="flex:1;overflow-y:auto;padding:14px;display:none;scrollbar-width:none;">
+        <div class="sim-title">Facial Biometric Simulation</div>
+        <div class="sim-desc">Simulate facial tracking and edge inference values to test liveness triggers and
+          SQLite/MMKV persistence logic.</div>
+
+        <div class="liveness-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div style="font-size:12px;font-weight:700;color:#E2E8F0;text-transform:uppercase;letter-spacing:0.8px;">
+              Liveness Check · BLINK</div>
+            <div
+              style="font-size:10px;background:rgba(99,102,241,0.2);color:#818CF8;padding:3px 8px;border-radius:8px;font-weight:600;">
+              PENDING</div>
           </div>
-          <div class="ear-hud" style="position:absolute;top:12px;left:12px;">
-            <div class="ear-hud-text">EAR: 0.31</div>
-            <div class="ear-hud-text">MAR: 0.14</div>
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:10px;color:#94A3B8;font-weight:600;">EAR (Eye Aspect Ratio)</span>
+              <span style="font-size:13px;font-weight:700;color:#6366F1;" id="ear-val">0.31</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill" id="ear-bar" style="width:62%;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+              <span style="font-size:10px;color:#94A3B8;font-weight:600;">MAR (Mouth Aspect Ratio)</span>
+              <span style="font-size:13px;font-weight:700;color:#6366F1;" id="mar-val">0.14</span>
+            </div>
+            <div class="bar-bg">
+              <div class="bar-fill bar-fill green" id="mar-bar" style="width:28%;"></div>
+            </div>
           </div>
         </div>
+
+        <div class="controls-card">
+          <div class="controls-title">Simulation Control Board</div>
+          <div class="sim-buttons">
+            <button class="sim-btn" onclick="simulateBlink()" id="blink-btn">Simulate Blink 👁️</button>
+            <button class="sim-btn disabled" id="smile-btn">Simulate Smile 😊</button>
+          </div>
+          <div class="divider"></div>
+          <div class="controls-title">Target Identity to Match</div>
+          <div class="emp-scroll">
+            <div class="emp-badge selected">Laksh Arora</div>
+            <div class="emp-badge">Priya Shah</div>
+            <div class="emp-badge">Rahul Dev</div>
+            <div class="emp-badge">Anika Roy</div>
+          </div>
+          <button class="verify-btn" id="verify-btn" onclick="showResult()" style="opacity:0.4;" disabled>Verify
+            Simulated Identity</button>
+        </div>
+      </div>
+
+      <!-- Success Result Overlay -->
+      <div class="result-overlay" id="result-overlay">
+        <div class="result-header" id="result-header">Authentication Success ✓</div>
+        <div class="employee-card">
+          <div class="employee-avatar">👤</div>
+          <div>
+            <div class="employee-name">Laksh Arora</div>
+            <div class="employee-role">Field Engineer · EMP-001</div>
+          </div>
+        </div>
+        <div class="confidence-label">
+          <span class="confidence-label-text">Similarity Score</span>
+          <span class="confidence-score">88.0%</span>
+        </div>
+        <div class="confidence-bar">
+          <div class="confidence-fill"></div>
+        </div>
+        <div class="bench-text">Inference Speed: 124ms (Target: &lt;1000ms)</div>
+        <button class="reset-btn" onclick="hideResult()">Reset Pipeline</button>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('home')"><span class="nav-icon">🏠</span><span
+            class="nav-label">Home</span></button>
+        <button class="nav-item active" onclick="showScreen('auth')"><span class="nav-icon">👁️</span><span
+            class="nav-label">Auth</span></button>
+        <button class="nav-item" onclick="showScreen('logs')"><span class="nav-icon">📋</span><span
+            class="nav-label">Logs</span></button>
+        <button class="nav-item" onclick="showScreen('settings')"><span class="nav-icon">⚙️</span><span
+            class="nav-label">Settings</span></button>
       </div>
     </div>
 
-    <!-- Simulator tab -->
-    <div id="sim-tab" style="flex:1;overflow-y:auto;padding:14px;display:none;scrollbar-width:none;">
-      <div class="sim-title">Facial Biometric Simulation</div>
-      <div class="sim-desc">Simulate facial tracking and edge inference values to test liveness triggers and SQLite/MMKV persistence logic.</div>
+    <!-- ===== REGISTER SCREEN ===== -->
+    <div id="register" class="screen">
+      <div class="screen-scroll">
+        <div class="section-header">
+          <div class="back-btn" onclick="showScreen('home')">←</div>
+          <div class="section-title">Register Employee</div>
+        </div>
 
-      <div class="liveness-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-          <div style="font-size:12px;font-weight:700;color:#E2E8F0;text-transform:uppercase;letter-spacing:0.8px;">Liveness Check · BLINK</div>
-          <div style="font-size:10px;background:rgba(99,102,241,0.2);color:#818CF8;padding:3px 8px;border-radius:8px;font-weight:600;">PENDING</div>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input class="form-input" type="text" placeholder="e.g. Laksh Arora" />
         </div>
-        <div style="margin-bottom:12px;">
-          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-            <span style="font-size:10px;color:#94A3B8;font-weight:600;">EAR (Eye Aspect Ratio)</span>
-            <span style="font-size:13px;font-weight:700;color:#6366F1;" id="ear-val">0.31</span>
-          </div>
-          <div class="bar-bg"><div class="bar-fill" id="ear-bar" style="width:62%;"></div></div>
+        <div class="form-group">
+          <label class="form-label">Employee Code</label>
+          <input class="form-input" type="text" placeholder="e.g. EMP-001" />
         </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
-            <span style="font-size:10px;color:#94A3B8;font-weight:600;">MAR (Mouth Aspect Ratio)</span>
-            <span style="font-size:13px;font-weight:700;color:#6366F1;" id="mar-val">0.14</span>
-          </div>
-          <div class="bar-bg"><div class="bar-fill bar-fill green" id="mar-bar" style="width:28%;"></div></div>
+        <div class="form-group">
+          <label class="form-label">Role / Department</label>
+          <input class="form-input" type="text" placeholder="e.g. Field Engineer" />
         </div>
-      </div>
 
-      <div class="controls-card">
-        <div class="controls-title">Simulation Control Board</div>
-        <div class="sim-buttons">
-          <button class="sim-btn" onclick="simulateBlink()" id="blink-btn">Simulate Blink 👁️</button>
-          <button class="sim-btn disabled" id="smile-btn">Simulate Smile 😊</button>
+        <div class="capture-zone">
+          <div class="capture-icon">📸</div>
+          <div class="capture-text">Tap to capture face baseline<br /><span style="color:#6366F1;font-weight:600;">5
+              photos</span> will be taken for embedding generation</div>
         </div>
-        <div class="divider"></div>
-        <div class="controls-title">Target Identity to Match</div>
-        <div class="emp-scroll">
-          <div class="emp-badge selected">Laksh Arora</div>
-          <div class="emp-badge">Priya Shah</div>
-          <div class="emp-badge">Rahul Dev</div>
-          <div class="emp-badge">Anika Roy</div>
-        </div>
-        <button class="verify-btn" id="verify-btn" onclick="showResult()" style="opacity:0.4;" disabled>Verify Simulated Identity</button>
+
+        <button class="primary-btn">Register &amp; Generate Embedding</button>
       </div>
     </div>
 
-    <!-- Success Result Overlay -->
-    <div class="result-overlay" id="result-overlay">
-      <div class="result-header" id="result-header">Authentication Success ✓</div>
-      <div class="employee-card">
-        <div class="employee-avatar">👤</div>
-        <div>
-          <div class="employee-name">Laksh Arora</div>
-          <div class="employee-role">Field Engineer · EMP-001</div>
+    <!-- ===== LOGS SCREEN ===== -->
+    <div id="logs" class="screen">
+      <div class="screen-scroll">
+        <div class="section-header">
+          <div class="back-btn" onclick="showScreen('home')">←</div>
+          <div class="section-title">Attendance Logs</div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:16px;">
+          <div
+            style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:10px 16px;flex:1;text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:#10B981;">12</div>
+            <div style="font-size:10px;color:#94A3B8;font-weight:600;margin-top:2px;">Successful</div>
+          </div>
+          <div
+            style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:10px 16px;flex:1;text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:#EF4444;">2</div>
+            <div style="font-size:10px;color:#94A3B8;font-weight:600;margin-top:2px;">Failed</div>
+          </div>
+          <div
+            style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:10px;padding:10px 16px;flex:1;text-align:center;">
+            <div style="font-size:22px;font-weight:800;color:#818CF8;">3</div>
+            <div style="font-size:10px;color:#94A3B8;font-weight:600;margin-top:2px;">Pending Sync</div>
+          </div>
+        </div>
+
+        <div class="log-item">
+          <div class="log-avatar">👤</div>
+          <div>
+            <div class="log-name">Laksh Arora</div>
+            <div class="log-time">Today · 9:32 AM · Blink</div>
+          </div>
+          <div class="log-score">
+            <div class="log-score-val">91.2%</div>
+            <div class="log-score-label">similarity</div>
+          </div>
+        </div>
+        <div class="log-item">
+          <div class="log-avatar">👤</div>
+          <div>
+            <div class="log-name">Priya Shah</div>
+            <div class="log-time">Today · 9:15 AM · Smile</div>
+          </div>
+          <div class="log-score">
+            <div class="log-score-val">87.4%</div>
+            <div class="log-score-label">similarity</div>
+          </div>
+        </div>
+        <div class="log-item">
+          <div class="log-avatar fail">❌</div>
+          <div>
+            <div class="log-name">Unknown</div>
+            <div class="log-time">Today · 8:58 AM · Blink</div>
+          </div>
+          <div class="log-score">
+            <div class="log-score-val fail">41.0%</div>
+            <div class="log-score-label">below threshold</div>
+          </div>
+        </div>
+        <div class="log-item">
+          <div class="log-avatar">👤</div>
+          <div>
+            <div class="log-name">Rahul Dev</div>
+            <div class="log-time">Yesterday · 6:45 PM · Blink</div>
+          </div>
+          <div class="log-score">
+            <div class="log-score-val">89.1%</div>
+            <div class="log-score-label">similarity</div>
+          </div>
+        </div>
+        <div class="log-item">
+          <div class="log-avatar">👤</div>
+          <div>
+            <div class="log-name">Anika Roy</div>
+            <div class="log-time">Yesterday · 5:12 PM · Smile</div>
+          </div>
+          <div class="log-score">
+            <div class="log-score-val">93.6%</div>
+            <div class="log-score-label">similarity</div>
+          </div>
         </div>
       </div>
-      <div class="confidence-label">
-        <span class="confidence-label-text">Similarity Score</span>
-        <span class="confidence-score">88.0%</span>
+
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('home')"><span class="nav-icon">🏠</span><span
+            class="nav-label">Home</span></button>
+        <button class="nav-item" onclick="showScreen('auth')"><span class="nav-icon">👁️</span><span
+            class="nav-label">Auth</span></button>
+        <button class="nav-item active"><span class="nav-icon">📋</span><span class="nav-label">Logs</span></button>
+        <button class="nav-item" onclick="showScreen('settings')"><span class="nav-icon">⚙️</span><span
+            class="nav-label">Settings</span></button>
       </div>
-      <div class="confidence-bar"><div class="confidence-fill"></div></div>
-      <div class="bench-text">Inference Speed: 124ms (Target: &lt;1000ms)</div>
-      <button class="reset-btn" onclick="hideResult()">Reset Pipeline</button>
     </div>
 
-    <div class="bottom-nav">
-      <button class="nav-item" onclick="showScreen('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
-      <button class="nav-item active" onclick="showScreen('auth')"><span class="nav-icon">👁️</span><span class="nav-label">Auth</span></button>
-      <button class="nav-item" onclick="showScreen('logs')"><span class="nav-icon">📋</span><span class="nav-label">Logs</span></button>
-      <button class="nav-item" onclick="showScreen('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+    <!-- ===== SETTINGS SCREEN ===== -->
+    <div id="settings" class="screen">
+      <div class="screen-scroll">
+        <div class="section-header">
+          <div class="back-btn" onclick="showScreen('home')">←</div>
+          <div class="section-title">System Settings</div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Recognition Thresholds</div>
+          <div class="settings-item">
+            <div class="settings-item-left">
+              <div class="settings-item-name">Similarity Threshold</div>
+              <div class="settings-item-value">0.75 (75% match required)</div>
+            </div>
+            <span class="settings-item-arrow">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-left">
+              <div class="settings-item-name">EAR Blink Threshold</div>
+              <div class="settings-item-value">0.21 (eye aspect ratio)</div>
+            </div>
+            <span class="settings-item-arrow">›</span>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-left">
+              <div class="settings-item-name">MAR Smile Threshold</div>
+              <div class="settings-item-value">0.60 (mouth aspect ratio)</div>
+            </div>
+            <span class="settings-item-arrow">›</span>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Application Mode</div>
+          <div class="settings-item">
+            <div class="settings-item-left">
+              <div class="settings-item-name">Demo Mode</div>
+              <div class="settings-item-value">Use interactive simulator by default</div>
+            </div>
+            <div class="toggle off" onclick="this.classList.toggle('off')"></div>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-left">
+              <div class="settings-item-name">Auto Sync</div>
+              <div class="settings-item-value">Sync when network is available</div>
+            </div>
+            <div class="toggle" onclick="this.classList.toggle('off')"></div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="settings-group-title">Diagnostics</div>
+          <div class="settings-item">
+            <div class="settings-item-left">
+              <div class="settings-item-name">Model: MobileFaceNet INT8</div>
+              <div class="settings-item-value">✅ Loaded · 112×112 input</div>
+            </div>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-left">
+              <div class="settings-item-name">Model: Face Landmark</div>
+              <div class="settings-item-value">✅ Loaded · 256×256 input</div>
+            </div>
+          </div>
+          <div class="settings-item">
+            <div class="settings-item-left">
+              <div class="settings-item-name">MMKV Storage</div>
+              <div class="settings-item-value">4 employees · 12 log entries</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="primary-btn"
+          style="background:linear-gradient(135deg,#EF4444,#F87171);box-shadow:0 4px 20px rgba(239,68,68,0.3);">Clear
+          All Local Data</button>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-item" onclick="showScreen('home')"><span class="nav-icon">🏠</span><span
+            class="nav-label">Home</span></button>
+        <button class="nav-item" onclick="showScreen('auth')"><span class="nav-icon">👁️</span><span
+            class="nav-label">Auth</span></button>
+        <button class="nav-item" onclick="showScreen('logs')"><span class="nav-icon">📋</span><span
+            class="nav-label">Logs</span></button>
+        <button class="nav-item active"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
+      </div>
     </div>
   </div>
 
-  <!-- ===== REGISTER SCREEN ===== -->
-  <div id="register" class="screen">
-    <div class="screen-scroll">
-      <div class="section-header">
-        <div class="back-btn" onclick="showScreen('home')">←</div>
-        <div class="section-title">Register Employee</div>
-      </div>
+  <p class="page-label">A.T.M.O.S · HACKATHON 7.0 · UI PREVIEW</p>
 
-      <div class="form-group">
-        <label class="form-label">Full Name</label>
-        <input class="form-input" type="text" placeholder="e.g. Laksh Arora" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Employee Code</label>
-        <input class="form-input" type="text" placeholder="e.g. EMP-001" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Role / Department</label>
-        <input class="form-input" type="text" placeholder="e.g. Field Engineer" />
-      </div>
+  <script>
+    let livenessComplete = false;
 
-      <div class="capture-zone">
-        <div class="capture-icon">📸</div>
-        <div class="capture-text">Tap to capture face baseline<br/><span style="color:#6366F1;font-weight:600;">5 photos</span> will be taken for embedding generation</div>
-      </div>
+    // Auto-advance splash → home
+    setTimeout(() => showScreen('home'), 2800);
 
-      <button class="primary-btn">Register &amp; Generate Embedding</button>
-    </div>
-  </div>
-
-  <!-- ===== LOGS SCREEN ===== -->
-  <div id="logs" class="screen">
-    <div class="screen-scroll">
-      <div class="section-header">
-        <div class="back-btn" onclick="showScreen('home')">←</div>
-        <div class="section-title">Attendance Logs</div>
-      </div>
-
-      <div style="display:flex;gap:8px;margin-bottom:16px;">
-        <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:10px 16px;flex:1;text-align:center;">
-          <div style="font-size:22px;font-weight:800;color:#10B981;">12</div>
-          <div style="font-size:10px;color:#94A3B8;font-weight:600;margin-top:2px;">Successful</div>
-        </div>
-        <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;padding:10px 16px;flex:1;text-align:center;">
-          <div style="font-size:22px;font-weight:800;color:#EF4444;">2</div>
-          <div style="font-size:10px;color:#94A3B8;font-weight:600;margin-top:2px;">Failed</div>
-        </div>
-        <div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);border-radius:10px;padding:10px 16px;flex:1;text-align:center;">
-          <div style="font-size:22px;font-weight:800;color:#818CF8;">3</div>
-          <div style="font-size:10px;color:#94A3B8;font-weight:600;margin-top:2px;">Pending Sync</div>
-        </div>
-      </div>
-
-      <div class="log-item">
-        <div class="log-avatar">👤</div>
-        <div><div class="log-name">Laksh Arora</div><div class="log-time">Today · 9:32 AM · Blink</div></div>
-        <div class="log-score"><div class="log-score-val">91.2%</div><div class="log-score-label">similarity</div></div>
-      </div>
-      <div class="log-item">
-        <div class="log-avatar">👤</div>
-        <div><div class="log-name">Priya Shah</div><div class="log-time">Today · 9:15 AM · Smile</div></div>
-        <div class="log-score"><div class="log-score-val">87.4%</div><div class="log-score-label">similarity</div></div>
-      </div>
-      <div class="log-item">
-        <div class="log-avatar fail">❌</div>
-        <div><div class="log-name">Unknown</div><div class="log-time">Today · 8:58 AM · Blink</div></div>
-        <div class="log-score"><div class="log-score-val fail">41.0%</div><div class="log-score-label">below threshold</div></div>
-      </div>
-      <div class="log-item">
-        <div class="log-avatar">👤</div>
-        <div><div class="log-name">Rahul Dev</div><div class="log-time">Yesterday · 6:45 PM · Blink</div></div>
-        <div class="log-score"><div class="log-score-val">89.1%</div><div class="log-score-label">similarity</div></div>
-      </div>
-      <div class="log-item">
-        <div class="log-avatar">👤</div>
-        <div><div class="log-name">Anika Roy</div><div class="log-time">Yesterday · 5:12 PM · Smile</div></div>
-        <div class="log-score"><div class="log-score-val">93.6%</div><div class="log-score-label">similarity</div></div>
-      </div>
-    </div>
-
-    <div class="bottom-nav">
-      <button class="nav-item" onclick="showScreen('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
-      <button class="nav-item" onclick="showScreen('auth')"><span class="nav-icon">👁️</span><span class="nav-label">Auth</span></button>
-      <button class="nav-item active"><span class="nav-icon">📋</span><span class="nav-label">Logs</span></button>
-      <button class="nav-item" onclick="showScreen('settings')"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
-    </div>
-  </div>
-
-  <!-- ===== SETTINGS SCREEN ===== -->
-  <div id="settings" class="screen">
-    <div class="screen-scroll">
-      <div class="section-header">
-        <div class="back-btn" onclick="showScreen('home')">←</div>
-        <div class="section-title">System Settings</div>
-      </div>
-
-      <div class="settings-group">
-        <div class="settings-group-title">Recognition Thresholds</div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <div class="settings-item-name">Similarity Threshold</div>
-            <div class="settings-item-value">0.75 (75% match required)</div>
-          </div>
-          <span class="settings-item-arrow">›</span>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <div class="settings-item-name">EAR Blink Threshold</div>
-            <div class="settings-item-value">0.21 (eye aspect ratio)</div>
-          </div>
-          <span class="settings-item-arrow">›</span>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <div class="settings-item-name">MAR Smile Threshold</div>
-            <div class="settings-item-value">0.60 (mouth aspect ratio)</div>
-          </div>
-          <span class="settings-item-arrow">›</span>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <div class="settings-group-title">Application Mode</div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <div class="settings-item-name">Demo Mode</div>
-            <div class="settings-item-value">Use interactive simulator by default</div>
-          </div>
-          <div class="toggle off" onclick="this.classList.toggle('off')"></div>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <div class="settings-item-name">Auto Sync</div>
-            <div class="settings-item-value">Sync when network is available</div>
-          </div>
-          <div class="toggle" onclick="this.classList.toggle('off')"></div>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <div class="settings-group-title">Diagnostics</div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <div class="settings-item-name">Model: MobileFaceNet INT8</div>
-            <div class="settings-item-value">✅ Loaded · 112×112 input</div>
-          </div>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <div class="settings-item-name">Model: Face Landmark</div>
-            <div class="settings-item-value">✅ Loaded · 256×256 input</div>
-          </div>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <div class="settings-item-name">MMKV Storage</div>
-            <div class="settings-item-value">4 employees · 12 log entries</div>
-          </div>
-        </div>
-      </div>
-
-      <button class="primary-btn" style="background:linear-gradient(135deg,#EF4444,#F87171);box-shadow:0 4px 20px rgba(239,68,68,0.3);">Clear All Local Data</button>
-    </div>
-
-    <div class="bottom-nav">
-      <button class="nav-item" onclick="showScreen('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
-      <button class="nav-item" onclick="showScreen('auth')"><span class="nav-icon">👁️</span><span class="nav-label">Auth</span></button>
-      <button class="nav-item" onclick="showScreen('logs')"><span class="nav-icon">📋</span><span class="nav-label">Logs</span></button>
-      <button class="nav-item active"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></button>
-    </div>
-  </div>
-</div>
-
-<p class="page-label">A.T.M.O.S · HACKATHON 7.0 · UI PREVIEW</p>
-
-<script>
-  let livenessComplete = false;
-
-  // Auto-advance splash → home
-  setTimeout(() => showScreen('home'), 2800);
-
-  function showScreen(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    // reset result overlay when leaving auth
-    if (id !== 'auth') hideResult();
-  }
-
-  function switchTab(tab) {
-    const liveTab = document.getElementById('live-tab');
-    const simTab = document.getElementById('sim-tab');
-    const tabLive = document.getElementById('tab-live');
-    const tabSim = document.getElementById('tab-sim');
-    if (tab === 'live') {
-      liveTab.style.display = 'flex';
-      simTab.style.display = 'none';
-      tabLive.classList.add('active');
-      tabSim.classList.remove('active');
-    } else {
-      liveTab.style.display = 'none';
-      simTab.style.display = 'block';
-      tabLive.classList.remove('active');
-      tabSim.classList.add('active');
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      // reset result overlay when leaving auth
+      if (id !== 'auth') hideResult();
     }
-  }
 
-  function simulateBlink() {
-    const earVal = document.getElementById('ear-val');
-    const earBar = document.getElementById('ear-bar');
-    const blinkBtn = document.getElementById('blink-btn');
-    const verifyBtn = document.getElementById('verify-btn');
+    function switchTab(tab) {
+      const liveTab = document.getElementById('live-tab');
+      const simTab = document.getElementById('sim-tab');
+      const tabLive = document.getElementById('tab-live');
+      const tabSim = document.getElementById('tab-sim');
+      if (tab === 'live') {
+        liveTab.style.display = 'flex';
+        simTab.style.display = 'none';
+        tabLive.classList.add('active');
+        tabSim.classList.remove('active');
+      } else {
+        liveTab.style.display = 'none';
+        simTab.style.display = 'block';
+        tabLive.classList.remove('active');
+        tabSim.classList.add('active');
+      }
+    }
 
-    blinkBtn.textContent = '✓ Blink Detected!';
-    blinkBtn.style.background = '#10B981';
-    blinkBtn.disabled = true;
+    function simulateBlink() {
+      const earVal = document.getElementById('ear-val');
+      const earBar = document.getElementById('ear-bar');
+      const blinkBtn = document.getElementById('blink-btn');
+      const verifyBtn = document.getElementById('verify-btn');
 
-    earVal.textContent = '0.12';
-    earBar.style.width = '24%';
-    earBar.style.background = 'linear-gradient(90deg,#EF4444,#F87171)';
+      blinkBtn.textContent = '✓ Blink Detected!';
+      blinkBtn.style.background = '#10B981';
+      blinkBtn.disabled = true;
 
-    setTimeout(() => {
-      earVal.textContent = '0.31';
-      earBar.style.width = '62%';
-      earBar.style.background = 'linear-gradient(90deg,#6366F1,#8B5CF6)';
-    }, 500);
+      earVal.textContent = '0.12';
+      earBar.style.width = '24%';
+      earBar.style.background = 'linear-gradient(90deg,#EF4444,#F87171)';
 
-    livenessComplete = true;
-    verifyBtn.disabled = false;
-    verifyBtn.style.opacity = '1';
+      setTimeout(() => {
+        earVal.textContent = '0.31';
+        earBar.style.width = '62%';
+        earBar.style.background = 'linear-gradient(90deg,#6366F1,#8B5CF6)';
+      }, 500);
 
-    document.querySelector('.liveness-card div:first-child div:last-child').textContent = '✓ VERIFIED';
-    document.querySelector('.liveness-card div:first-child div:last-child').style.background = 'rgba(16,185,129,0.2)';
-    document.querySelector('.liveness-card div:first-child div:last-child').style.color = '#10B981';
-  }
+      livenessComplete = true;
+      verifyBtn.disabled = false;
+      verifyBtn.style.opacity = '1';
 
-  function showResult() {
-    if (!livenessComplete) return;
-    document.getElementById('result-overlay').classList.add('show');
-  }
+      document.querySelector('.liveness-card div:first-child div:last-child').textContent = '✓ VERIFIED';
+      document.querySelector('.liveness-card div:first-child div:last-child').style.background = 'rgba(16,185,129,0.2)';
+      document.querySelector('.liveness-card div:first-child div:last-child').style.color = '#10B981';
+    }
 
-  function hideResult() {
-    document.getElementById('result-overlay').classList.remove('show');
-    livenessComplete = false;
-    const blinkBtn = document.getElementById('blink-btn');
-    blinkBtn.textContent = 'Simulate Blink 👁️';
-    blinkBtn.style.background = '#3B82F6';
-    blinkBtn.disabled = false;
-    const verifyBtn = document.getElementById('verify-btn');
-    verifyBtn.disabled = true;
-    verifyBtn.style.opacity = '0.4';
-    document.getElementById('ear-val').textContent = '0.31';
-    document.getElementById('ear-bar').style.width = '62%';
-    document.getElementById('ear-bar').style.background = 'linear-gradient(90deg,#6366F1,#8B5CF6)';
-  }
+    function showResult() {
+      if (!livenessComplete) return;
+      document.getElementById('result-overlay').classList.add('show');
+    }
 
-  // Employee badge selection
-  document.querySelectorAll('.emp-badge').forEach(badge => {
-    badge.addEventListener('click', () => {
-      document.querySelectorAll('.emp-badge').forEach(b => b.classList.remove('selected'));
-      badge.classList.add('selected');
+    function hideResult() {
+      document.getElementById('result-overlay').classList.remove('show');
+      livenessComplete = false;
+      const blinkBtn = document.getElementById('blink-btn');
+      blinkBtn.textContent = 'Simulate Blink 👁️';
+      blinkBtn.style.background = '#3B82F6';
+      blinkBtn.disabled = false;
+      const verifyBtn = document.getElementById('verify-btn');
+      verifyBtn.disabled = true;
+      verifyBtn.style.opacity = '0.4';
+      document.getElementById('ear-val').textContent = '0.31';
+      document.getElementById('ear-bar').style.width = '62%';
+      document.getElementById('ear-bar').style.background = 'linear-gradient(90deg,#6366F1,#8B5CF6)';
+    }
+
+    // Employee badge selection
+    document.querySelectorAll('.emp-badge').forEach(badge => {
+      badge.addEventListener('click', () => {
+        document.querySelectorAll('.emp-badge').forEach(b => b.classList.remove('selected'));
+        badge.classList.add('selected');
+      });
     });
-  });
-</script>
+  </script>
 </body>
+
 </html>
