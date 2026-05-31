@@ -160,7 +160,6 @@ This repository is built to support contributions from multiple engineers. If yo
 
 1.  **Read the Contribution Guide:** See [CONTRIBUTING.md](file:///c:/Users/laksh/Desktop/ATMOS/DataLake3FaceAuth/CONTRIBUTING.md) for details on commit conventions and branching.
 2.  **Linting & Style:** Ensure your changes adhere to rules defined in `.prettierrc.js` and `.eslintrc.js`. Run `npm run lint` before committing.
-3.  **Code of Conduct:** Review the [CODE_OF_CONDUCT.md](file:///c:/Users/laksh/Desktop/ATMOS/DataLake3FaceAuth/CODE_OF_CONDUCT.md) to maintain a respectful and welcoming environment.
 
 ---
 
