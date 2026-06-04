@@ -89,7 +89,9 @@ ml/exports/mobilefacenet_tf/
 *.pt
 
 # Datasets
-ml/datasets/
+ml/datasets/*
+!ml/datasets/*.py
+!ml/datasets/**/*.py
 
 # Training outputs
 ml/training/checkpoints/
