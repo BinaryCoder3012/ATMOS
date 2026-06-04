@@ -1,27 +1,50 @@
-import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Rect, Defs, Mask } from 'react-native-svg';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const ESTIMATED_PROMPT_HEIGHT = 120;
+const PROMPT_GAP = 20;
+const EDGE_PADDING = 16;
 
 interface CameraOverlayProps {
   livenessMethod: 'blink' | 'smile' | null;
   livenessState: { isComplete: boolean; isTimedOut: boolean; blinkCount: number };
   instructionText: string;
+  promptPlacement?: 'top' | 'bottom';
 }
 
 export default function CameraOverlay({
   livenessMethod,
   livenessState,
   instructionText,
+  promptPlacement = 'bottom',
 }: CameraOverlayProps) {
-  const guideWidth = SCREEN_WIDTH * 0.75;
+  const [layout, setLayout] = useState({ width: 0, height: 0 });
+  const overlayWidth = layout.width;
+  const overlayHeight = layout.height;
+  const hasLayout = overlayWidth > 0 && overlayHeight > 0;
+  const promptClearance = EDGE_PADDING + ESTIMATED_PROMPT_HEIGHT + PROMPT_GAP;
+  const maxGuideHeight = Math.max(140, overlayHeight - promptClearance - EDGE_PADDING);
+  const guideWidth = Math.min(overlayWidth * 0.68, 300, maxGuideHeight / 1.25);
   const guideHeight = guideWidth * 1.25;
-  const guideX = (SCREEN_WIDTH - guideWidth) / 2;
-  const guideY = (SCREEN_HEIGHT * 0.45) - (guideHeight / 2);
+  const guideX = (overlayWidth - guideWidth) / 2;
+  const desiredGuideY = (overlayHeight * 0.42) - (guideHeight / 2);
+  const minGuideY = promptPlacement === 'top' ? promptClearance : EDGE_PADDING;
+  const maxGuideY = Math.max(
+    minGuideY,
+    overlayHeight - guideHeight - (promptPlacement === 'bottom' ? promptClearance : EDGE_PADDING)
+  );
+  const guideY = Math.min(Math.max(desiredGuideY, minGuideY), maxGuideY);
+  const promptTop = Math.max(EDGE_PADDING, guideY - ESTIMATED_PROMPT_HEIGHT - PROMPT_GAP);
+  const promptBottom = Math.max(EDGE_PADDING, overlayHeight - guideY - guideHeight - ESTIMATED_PROMPT_HEIGHT - PROMPT_GAP);
 
   return (
-    <View style={StyleSheet.absoluteFill}>
+    <View
+      style={StyleSheet.absoluteFill}
+      onLayout={event => setLayout(event.nativeEvent.layout)}
+    >
+      {hasLayout && (
+        <>
       {/* Dark mask overlay with face-shaped cutout */}
       <Svg style={StyleSheet.absoluteFill}>
         <Defs>
@@ -65,7 +88,12 @@ export default function CameraOverlay({
       />
 
       {/* Glassmorphic prompt card */}
-      <View style={styles.promptContainer}>
+      <View
+        style={[
+          styles.promptContainer,
+          promptPlacement === 'top' ? { top: promptTop } : { bottom: promptBottom },
+        ]}
+      >
         <View style={styles.glassCard}>
           <Text style={styles.promptTitle}>
             {livenessState.isComplete
@@ -95,6 +123,8 @@ export default function CameraOverlay({
           )}
         </View>
       </View>
+        </>
+      )}
     </View>
   );
 }
@@ -112,14 +142,13 @@ const styles = StyleSheet.create({
   },
   promptContainer: {
     position: 'absolute',
-    bottom: 80,
     left: 20,
     right: 20,
     alignItems: 'center',
   },
   glassCard: {
     width: '100%',
-    padding: 20,
+    padding: 16,
     borderRadius: 20,
     backgroundColor: 'rgba(25, 25, 35, 0.75)',
     borderWidth: 1,
@@ -140,7 +169,7 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   promptInstruction: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
     marginVertical: 4,

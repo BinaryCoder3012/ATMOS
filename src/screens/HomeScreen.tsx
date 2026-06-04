@@ -108,14 +108,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F172A',
   },
   content: {
-    padding: 24,
-    paddingTop: 60,
+    padding: 20,
+    paddingTop: 32,
+    paddingBottom: 32,
   },
   header: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 32,
+    gap: 12,
+    marginBottom: 24,
   },
   title: {
     fontSize: 28,
@@ -126,6 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#818CF8',
     marginTop: 2,
+    flexShrink: 1,
   },
   menuContainer: {
     marginBottom: 24,
@@ -134,9 +138,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(30, 41, 59, 0.45)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 24,
-    padding: 24,
-    marginBottom: 20,
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -149,8 +153,10 @@ const styles = StyleSheet.create({
   },
   cardHeader: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 8,
     marginBottom: 8,
   },
   badgeLabel: {
@@ -184,7 +190,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(15, 23, 42, 0.6)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 20,
   },
   syncTitle: {

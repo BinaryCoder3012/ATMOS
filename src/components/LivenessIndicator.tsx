@@ -21,7 +21,7 @@ export default function LivenessIndicator({
 
   useEffect(() => {
     scale.value = withRepeat(withTiming(1.15, { duration: 1000 }), -1, true);
-  }, []);
+  }, [scale]);
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
@@ -76,11 +76,12 @@ export default function LivenessIndicator({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
     marginTop: 20,
   },
   card: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     padding: 16,
     borderRadius: 16,
@@ -101,10 +102,13 @@ const styles = StyleSheet.create({
   },
   barContainer: {
     flex: 1,
+    minWidth: 180,
   },
   barLabelRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
+    gap: 8,
     marginBottom: 6,
   },
   barLabel: {

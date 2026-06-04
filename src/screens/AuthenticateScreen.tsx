@@ -11,13 +11,14 @@
  *
  * Falls back to simulation panel in emulators/demo modes.
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, Dimensions, ScrollView,
+  View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView,
 } from 'react-native';
 import {
   Camera, useCameraDevice, useFrameProcessor,
 } from 'react-native-vision-camera';
+import { NitroModules } from 'react-native-nitro-modules';
 import { runOnJS } from 'react-native-reanimated';
 import { useModels } from '../hooks/useModels';
 import { usePermissions } from '../hooks/usePermissions';
@@ -25,7 +26,7 @@ import { useLiveness } from '../hooks/useLiveness';
 import { SyncManager } from '../services/SyncManager';
 import { useIsFocused } from '@react-navigation/native';
 import { getEmployeeById, getAllEmployees, getEmbeddingsForMatching } from '../storage/employeeStore';
-import { normalizeFrameForFaceNet, parseLandmarks } from '../services/AuthService';
+import { parseLandmarks } from '../services/AuthService';
 import { preprocessFrame, normalizeFrame } from '../utils/imagePreprocessor';
 import { calculateAverageEAR } from '../utils/earCalculator';
 import { calculateMAR } from '../utils/marCalculator';
@@ -34,6 +35,7 @@ import { ENV } from '../config/env';
 import { MODEL_INPUT } from '../constants';
 import { logAuthBenchmark, createTimingMarks } from '../utils/logger';
 import CameraOverlay from '../components/CameraOverlay';
+import CameraPermissionPrompt from '../components/CameraPermissionPrompt';
 import LivenessIndicator from '../components/LivenessIndicator';
 import ConfidenceBar from '../components/ConfidenceBar';
 import EmployeeCard from '../components/EmployeeCard';
@@ -46,6 +48,16 @@ export default function AuthenticateScreen() {
   const device = frontDevice ?? backDevice;
   const { cameraPermission, requestCameraPermission } = usePermissions();
   const { isLoaded, error: modelError, faceRecognitionModel, faceLandmarkModel } = useModels();
+  const faceRecognition = faceRecognitionModel?.state === 'loaded' ? faceRecognitionModel.model : undefined;
+  const faceLandmark = faceLandmarkModel?.state === 'loaded' ? faceLandmarkModel.model : undefined;
+  const boxedFaceRecognition = useMemo(
+    () => (faceRecognition ? NitroModules.box(faceRecognition) : undefined),
+    [faceRecognition]
+  );
+  const boxedFaceLandmark = useMemo(
+    () => (faceLandmark ? NitroModules.box(faceLandmark) : undefined),
+    [faceLandmark]
+  );
   const {
     livenessState,
     confirmBlink,
@@ -132,18 +144,20 @@ export default function AuthenticateScreen() {
     frame => {
       'worklet';
 
-      if (!faceRecognitionModel?.model || !faceLandmarkModel?.model) {
+      if (!boxedFaceRecognition || !boxedFaceLandmark) {
         return;
       }
 
       try {
+        const recognitionModel = boxedFaceRecognition.unbox();
+        const landmarkModel = boxedFaceLandmark.unbox();
         const buffer = frame.toArrayBuffer();
         const rawBytes = new Uint8Array(buffer);
 
         // Calculate landmarks
         const landmarkBytes = preprocessFrame(rawBytes, frame.width, frame.height, 256, 256);
         const landmarkInput = normalizeFrame(landmarkBytes, 0, 1, true);
-        const landmarkOutputs = faceLandmarkModel.model.runSync([landmarkInput.buffer as ArrayBuffer]);
+        const landmarkOutputs = landmarkModel.runSync([landmarkInput.buffer as ArrayBuffer]);
 
         if (landmarkOutputs && landmarkOutputs.length > 0) {
           const landmarksFloat = new Float32Array(landmarkOutputs[0]);
@@ -163,7 +177,7 @@ export default function AuthenticateScreen() {
           if (livenessState.isComplete) {
             const recBytes = preprocessFrame(rawBytes, frame.width, frame.height, 112, 112);
             const recInput = normalizeFrame(recBytes, MODEL_INPUT.MEAN, MODEL_INPUT.STD, false);
-            const recOutputs = faceRecognitionModel.model.runSync([recInput.buffer as ArrayBuffer]);
+            const recOutputs = recognitionModel.runSync([recInput.buffer as ArrayBuffer]);
 
             if (recOutputs && recOutputs.length > 0) {
               const embedding = Array.from(new Float32Array(recOutputs[0]));
@@ -173,11 +187,11 @@ export default function AuthenticateScreen() {
             }
           }
         }
-      } catch (err) {
+      } catch {
         // Fail silently in worklet loop
       }
     },
-    [faceRecognitionModel, faceLandmarkModel, livenessState, confirmBlink, confirmSmile, updateMetrics, completeAuth]
+    [boxedFaceRecognition, boxedFaceLandmark, livenessState, confirmBlink, confirmSmile, updateMetrics, completeAuth]
   );
 
   // Simulated triggers for demo/emulator
@@ -258,7 +272,12 @@ export default function AuthenticateScreen() {
 
       {!isSimulationMode ? (
         <View style={styles.cameraContainer}>
-          {cameraPermission === 'granted' && device && isLoaded ? (
+          {cameraPermission !== 'granted' && cameraPermission !== 'loading' ? (
+            <CameraPermissionPrompt
+              status={cameraPermission}
+              onRequestPermission={requestCameraPermission}
+            />
+          ) : cameraPermission === 'granted' && device && isLoaded ? (
             <View style={StyleSheet.absoluteFill}>
               <Camera
                 style={StyleSheet.absoluteFill}
@@ -368,12 +387,16 @@ export default function AuthenticateScreen() {
       {/* Result Bottom Sheet */}
       {authResult && (
         <View style={styles.resultContainer}>
-          <View style={styles.resultCard}>
+          <ScrollView
+            style={styles.resultScroll}
+            contentContainerStyle={styles.resultCard}
+            showsVerticalScrollIndicator={false}
+          >
             <Text style={[styles.resultHeader, { color: authResult.success ? '#10B981' : '#EF4444' }]}>
               {authResult.success ? 'Authentication Success ✓' : 'Authentication Failed ✗'}
             </Text>
             {authResult.success && authResult.employee ? (
-              <View style={{ width: '100%' }}>
+              <View style={styles.fullWidth}>
                 <EmployeeCard employee={authResult.employee} />
                 <ConfidenceBar
                   score={authResult.similarityScore ?? 0}
@@ -391,7 +414,7 @@ export default function AuthenticateScreen() {
             <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
               <Text style={styles.resetButtonText}>Reset Pipeline</Text>
             </TouchableOpacity>
-          </View>
+          </ScrollView>
         </View>
       )}
     </View>
@@ -405,14 +428,18 @@ const styles = StyleSheet.create({
   },
   tabHeader: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     backgroundColor: '#1E293B',
     padding: 6,
     borderRadius: 12,
     margin: 16,
+    gap: 6,
   },
   tabButton: {
     flex: 1,
+    minWidth: 140,
     paddingVertical: 10,
+    paddingHorizontal: 8,
     alignItems: 'center',
     borderRadius: 8,
   },
@@ -423,6 +450,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 13,
+    textAlign: 'center',
   },
   cameraContainer: {
     flex: 1,
@@ -442,7 +470,7 @@ const styles = StyleSheet.create({
   },
   simulatorContent: {
     padding: 16,
-    paddingBottom: 240,
+    paddingBottom: 32,
   },
   sectionTitle: {
     fontSize: 22,
@@ -462,7 +490,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(30, 41, 59, 0.45)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 16,
     marginTop: 16,
   },
@@ -476,11 +504,13 @@ const styles = StyleSheet.create({
   },
   simButtonsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 12,
     marginBottom: 16,
   },
   simButton: {
-    flex: 0.48,
+    flex: 1,
+    minWidth: 140,
     backgroundColor: '#3B82F6',
     borderRadius: 12,
     paddingVertical: 12,
@@ -552,18 +582,27 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
+    maxHeight: '72%',
     padding: 16,
     backgroundColor: 'rgba(15, 23, 42, 0.95)',
     borderTopWidth: 1,
     borderTopColor: '#334155',
   },
+  resultScroll: {
+    width: '100%',
+  },
   resultCard: {
     alignItems: 'center',
+    paddingBottom: 8,
   },
   resultHeader: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
+    textAlign: 'center',
+  },
+  fullWidth: {
+    width: '100%',
   },
   errorText: {
     color: '#EF4444',
