@@ -66,6 +66,13 @@ yarn-error.log
 # testing
 /coverage
 
+# ML generated artifacts
+ml/**/*.pth
+ml/**/*.onnx
+ml/**/*.tflite
+ml/**/__pycache__/
+ml/exports/mobilefacenet_tf/
+
 # Yarn
 .yarn/*
 !.yarn/patches
@@ -76,3 +83,16 @@ yarn-error.log
 
 # Environment files
 .env
+
+# Model checkpoints
+*.pth
+*.pt
+
+# Datasets
+ml/datasets/
+
+# Training outputs
+ml/training/checkpoints/
+
+# TensorBoard logs
+runs/
