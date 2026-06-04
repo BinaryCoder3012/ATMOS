@@ -434,6 +434,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     margin: 16,
     gap: 6,
+    zIndex: 1000,
+    elevation: 1000,
   },
   tabButton: {
     flex: 1,
@@ -455,6 +457,7 @@ const styles = StyleSheet.create({
   cameraContainer: {
     flex: 1,
     position: 'relative',
+    zIndex: 0,
   },
   loadingContainer: {
     flex: 1,
