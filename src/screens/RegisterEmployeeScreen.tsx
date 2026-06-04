@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera, useCameraDevice, useFrameProcessor } from 'react-native-vision-camera';
 import { runOnJS } from 'react-native-reanimated';
 import { registerEmployee } from '../storage/employeeStore';
@@ -14,6 +14,7 @@ import CameraOverlay from '../components/CameraOverlay';
 
 export default function RegisterEmployeeScreen() {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   const [name, setName] = useState('');
   const [employeeCode, setEmployeeCode] = useState('');
@@ -113,7 +114,7 @@ export default function RegisterEmployeeScreen() {
               <Camera
                 style={StyleSheet.absoluteFill}
                 device={device}
-                isActive={isScanning && !isProcessing}
+                isActive={isFocused && isScanning && !isProcessing}
                 frameProcessor={frameProcessor}
                 pixelFormat="rgb"
               />
