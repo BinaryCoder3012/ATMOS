@@ -12,7 +12,7 @@ export function useLiveness() {
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const resetLiveness = useCallback(() => {
+  const resetLiveness = useCallback((isSimulation = false) => {
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
@@ -28,14 +28,16 @@ export function useLiveness() {
       isTimedOut: false,
     });
 
-    timerRef.current = setTimeout(() => {
-      setLivenessState(prev => {
-        if (!prev.isComplete) {
-          return { ...prev, isTimedOut: true };
-        }
-        return prev;
-      });
-    }, ENV.LIVENESS_TIMEOUT_MS);
+    if (!isSimulation) {
+      timerRef.current = setTimeout(() => {
+        setLivenessState(prev => {
+          if (!prev.isComplete) {
+            return { ...prev, isTimedOut: true };
+          }
+          return prev;
+        });
+      }, ENV.LIVENESS_TIMEOUT_MS);
+    }
   }, []);
 
   const confirmBlink = useCallback(() => {
