@@ -23,6 +23,7 @@ import { useModels } from '../hooks/useModels';
 import { usePermissions } from '../hooks/usePermissions';
 import { useLiveness } from '../hooks/useLiveness';
 import { SyncManager } from '../services/SyncManager';
+import { useIsFocused } from '@react-navigation/native';
 import { getEmployeeById, getAllEmployees, getEmbeddingsForMatching } from '../storage/employeeStore';
 import { normalizeFrameForFaceNet, parseLandmarks } from '../services/AuthService';
 import { preprocessFrame, normalizeFrame } from '../utils/imagePreprocessor';
@@ -39,6 +40,7 @@ import EmployeeCard from '../components/EmployeeCard';
 import type { AuthResult, Employee } from '../types';
 
 export default function AuthenticateScreen() {
+  const isFocused = useIsFocused();
   const frontDevice = useCameraDevice('front');
   const backDevice = useCameraDevice('back');
   const device = frontDevice ?? backDevice;
@@ -261,7 +263,7 @@ export default function AuthenticateScreen() {
               <Camera
                 style={StyleSheet.absoluteFill}
                 device={device}
-                isActive={!authResult && !isProcessing}
+                isActive={isFocused && !authResult && !isProcessing}
                 frameProcessor={frameProcessor}
                 pixelFormat="rgb"
               />
