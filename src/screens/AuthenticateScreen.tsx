@@ -39,7 +39,9 @@ import EmployeeCard from '../components/EmployeeCard';
 import type { AuthResult, Employee } from '../types';
 
 export default function AuthenticateScreen() {
-  const device = useCameraDevice('front');
+  const frontDevice = useCameraDevice('front');
+  const backDevice = useCameraDevice('back');
+  const device = frontDevice ?? backDevice;
   const { cameraPermission, requestCameraPermission } = usePermissions();
   const { isLoaded, error: modelError, faceRecognitionModel, faceLandmarkModel } = useModels();
   const {
@@ -74,10 +76,10 @@ export default function AuthenticateScreen() {
 
   useEffect(() => {
     requestCameraPermission();
-    resetLiveness();
+    resetLiveness(isSimulationMode);
     loadData();
     timingRef.current = createTimingMarks();
-  }, [requestCameraPermission, resetLiveness, loadData]);
+  }, [requestCameraPermission, resetLiveness, loadData, isSimulationMode]);
 
   // JS callbacks to update state from the Frame Processor
   const updateMetrics = useCallback((ear: number, mar: number) => {
@@ -225,7 +227,7 @@ export default function AuthenticateScreen() {
   const handleReset = () => {
     setAuthResult(null);
     setIsProcessing(false);
-    resetLiveness();
+    resetLiveness(isSimulationMode);
     timingRef.current = createTimingMarks();
   };
 
@@ -234,13 +236,19 @@ export default function AuthenticateScreen() {
       <View style={styles.tabHeader}>
         <TouchableOpacity
           style={[styles.tabButton, !isSimulationMode && styles.activeTab]}
-          onPress={() => setIsSimulationMode(false)}
+          onPress={() => {
+            setIsSimulationMode(false);
+            resetLiveness(false);
+          }}
         >
           <Text style={styles.tabText}>Live Camera Stream</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tabButton, isSimulationMode && styles.activeTab]}
-          onPress={() => setIsSimulationMode(true)}
+          onPress={() => {
+            setIsSimulationMode(true);
+            resetLiveness(true);
+          }}
         >
           <Text style={styles.tabText}>Interactive Simulator</Text>
         </TouchableOpacity>

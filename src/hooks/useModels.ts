@@ -20,11 +20,11 @@ export interface ModelsState {
 
 export function useModels(): ModelsState {
   const faceRecognitionModel = useTensorflowModel(
-    require(`../../android/app/src/main/assets/${MODEL_FILES.FACE_RECOGNITION}`),
+    require('../../android/app/src/main/assets/mobilefacenet_int8.tflite'),
     []
   );
   const faceLandmarkModel = useTensorflowModel(
-    require(`../../android/app/src/main/assets/${MODEL_FILES.FACE_LANDMARK}`),
+    require('../../android/app/src/main/assets/face_landmark.tflite'),
     []
   );
 
