@@ -15,6 +15,7 @@ from datasets.preprocess import get_dataloaders
 
 def train_model(
     dataset_dir,
+    pretrained_checkpoint=None,
     epochs=20,
     batch_size=64,
     lr=0.001,
@@ -46,6 +47,15 @@ def train_model(
     # 2. Instantiate Model and ArcFace Layer
     model = MobileFaceNet(embedding_size=embedding_size).to(device)
     metric_fc = ArcMarginProduct(in_features=embedding_size, out_features=num_classes, s=30.0, m=arcface_margin).to(device)
+
+    # Load pretrained checkpoint if provided
+    if pretrained_checkpoint and os.path.exists(pretrained_checkpoint):
+        print(f"Loading pretrained weights from {pretrained_checkpoint}")
+        checkpoint = torch.load(pretrained_checkpoint, map_location=device, weights_only=False)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        print(f"Loaded checkpoint from epoch {checkpoint.get('epoch', '?')} with embedding size {checkpoint.get('embedding_size', '?')}")
+    else:
+        print("No pretrained checkpoint found, training from scratch.")
     
     # 3. Loss, Optimizer and Scheduler
     criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
@@ -178,6 +188,7 @@ if __name__ == '__main__':
     parser.add_argument('--weight_decay', type=float, default=1e-4, help='AdamW weight decay')
     parser.add_argument('--arcface_margin', type=float, default=0.35, help='ArcFace angular margin')
     parser.add_argument('--checkpoint_dir', type=str, default=None, help='Directory for checkpoint files')
+    parser.add_argument('--pretrained_checkpoint', type=str, default=None, help='Path to pretrained checkpoint for fine-tuning')
     parser.add_argument('--num_workers', type=int, default=4, help='DataLoader worker processes')
     parser.add_argument('--no_balanced_sampling', action='store_true', help='Disable balanced identity sampling')
     parser.add_argument('--no_save_latest', action='store_true', help='Only save best_mobilefacenet.pth')
@@ -193,6 +204,7 @@ if __name__ == '__main__':
     
     train_model(
         dataset_dir=dataset_path,
+        pretrained_checkpoint=args.pretrained_checkpoint,
         epochs=args.epochs,
         batch_size=args.batch_size,
         lr=args.lr,
