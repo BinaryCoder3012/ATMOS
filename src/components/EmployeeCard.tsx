@@ -35,6 +35,7 @@ export default function EmployeeCard({ employee, onDelete }: EmployeeCardProps) 
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
     padding: 16,
     borderRadius: 16,
@@ -59,12 +60,14 @@ const styles = StyleSheet.create({
   },
   info: {
     flex: 1,
+    minWidth: 0,
   },
   name: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#F9FAFB',
     marginBottom: 4,
+    flexShrink: 1,
   },
   detail: {
     fontSize: 12,

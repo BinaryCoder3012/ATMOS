@@ -131,7 +131,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F172A',
   },
   content: {
-    padding: 24,
+    padding: 20,
+    paddingBottom: 32,
   },
   title: {
     fontSize: 22,
@@ -149,8 +150,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(30, 41, 59, 0.45)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 16,
+    padding: 16,
     marginBottom: 20,
   },
   sectionHeader: {

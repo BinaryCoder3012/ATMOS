@@ -88,8 +88,10 @@ const styles = StyleSheet.create({
   },
   syncHeader: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 12,
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#1E293B',
@@ -132,14 +134,18 @@ const styles = StyleSheet.create({
   },
   logHeader: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 8,
     marginBottom: 8,
   },
   logName: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    flex: 1,
+    minWidth: 160,
   },
   syncIndicator: {
     paddingVertical: 3,

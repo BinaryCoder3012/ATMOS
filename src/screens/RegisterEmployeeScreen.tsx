@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import {
   View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera, useCameraDevice, useFrameProcessor } from 'react-native-vision-camera';
+import { NitroModules } from 'react-native-nitro-modules';
 import { runOnJS } from 'react-native-reanimated';
 import { registerEmployee } from '../storage/employeeStore';
 import { usePermissions } from '../hooks/usePermissions';
@@ -11,6 +12,7 @@ import { useModels } from '../hooks/useModels';
 import { preprocessFrame, normalizeFrame } from '../utils/imagePreprocessor';
 import { MODEL_INPUT } from '../constants';
 import CameraOverlay from '../components/CameraOverlay';
+import CameraPermissionPrompt from '../components/CameraPermissionPrompt';
 
 export default function RegisterEmployeeScreen() {
   const navigation = useNavigation();
@@ -28,6 +30,16 @@ export default function RegisterEmployeeScreen() {
   const device = frontDevice ?? backDevice;
   const { cameraPermission, requestCameraPermission } = usePermissions();
   const { isLoaded, error: modelError, faceRecognitionModel, faceLandmarkModel } = useModels();
+  const faceRecognition = faceRecognitionModel?.state === 'loaded' ? faceRecognitionModel.model : undefined;
+  const faceLandmark = faceLandmarkModel?.state === 'loaded' ? faceLandmarkModel.model : undefined;
+  const boxedFaceRecognition = useMemo(
+    () => (faceRecognition ? NitroModules.box(faceRecognition) : undefined),
+    [faceRecognition]
+  );
+  const boxedFaceLandmark = useMemo(
+    () => (faceLandmark ? NitroModules.box(faceLandmark) : undefined),
+    [faceLandmark]
+  );
 
   useEffect(() => {
     if (isScanning) {
@@ -60,35 +72,37 @@ export default function RegisterEmployeeScreen() {
     frame => {
       'worklet';
 
-      if (!faceRecognitionModel?.model || !faceLandmarkModel?.model) {
+      if (!boxedFaceRecognition || !boxedFaceLandmark) {
         return;
       }
 
       try {
+        const recognitionModel = boxedFaceRecognition.unbox();
+        const landmarkModel = boxedFaceLandmark.unbox();
         const buffer = frame.toArrayBuffer();
         const rawBytes = new Uint8Array(buffer);
 
         // Detect landmarks first to verify a face is present
         const landmarkBytes = preprocessFrame(rawBytes, frame.width, frame.height, 256, 256);
         const landmarkInput = normalizeFrame(landmarkBytes, 0, 1, true);
-        const landmarkOutputs = faceLandmarkModel.model.runSync([landmarkInput.buffer as ArrayBuffer]);
+        const landmarkOutputs = landmarkModel.runSync([landmarkInput.buffer as ArrayBuffer]);
 
         if (landmarkOutputs && landmarkOutputs.length > 0) {
           // Face detected, generate baseline embedding
           const recBytes = preprocessFrame(rawBytes, frame.width, frame.height, 112, 112);
           const recInput = normalizeFrame(recBytes, MODEL_INPUT.MEAN, MODEL_INPUT.STD, false);
-          const recOutputs = faceRecognitionModel.model.runSync([recInput.buffer as ArrayBuffer]);
+          const recOutputs = recognitionModel.runSync([recInput.buffer as ArrayBuffer]);
 
           if (recOutputs && recOutputs.length > 0) {
             const embedding = Array.from(new Float32Array(recOutputs[0]));
             runOnJS(completeEnrollment)(embedding);
           }
         }
-      } catch (err) {
+      } catch {
         // Fail silently in worklet loop
       }
     },
-    [faceRecognitionModel, faceLandmarkModel, completeEnrollment]
+    [boxedFaceRecognition, boxedFaceLandmark, completeEnrollment]
   );
 
   const handleRegisterPress = () => {
@@ -109,7 +123,12 @@ export default function RegisterEmployeeScreen() {
     return (
       <View style={styles.container}>
         <View style={styles.cameraContainer}>
-          {cameraPermission === 'granted' && device && isLoaded ? (
+          {cameraPermission !== 'granted' && cameraPermission !== 'loading' ? (
+            <CameraPermissionPrompt
+              status={cameraPermission}
+              onRequestPermission={requestCameraPermission}
+            />
+          ) : cameraPermission === 'granted' && device && isLoaded ? (
             <View style={StyleSheet.absoluteFill}>
               <Camera
                 style={StyleSheet.absoluteFill}
@@ -122,6 +141,7 @@ export default function RegisterEmployeeScreen() {
                 livenessMethod={null}
                 livenessState={{ isComplete: true, isTimedOut: false, blinkCount: 0 }}
                 instructionText="Align face within guide to scan baseline"
+                promptPlacement="top"
               />
               <View style={styles.simulateOverlayContainer}>
                 <TouchableOpacity
@@ -147,7 +167,7 @@ export default function RegisterEmployeeScreen() {
                 {modelError ? modelError : 'Opening camera stream & models...'}
               </Text>
               <TouchableOpacity
-                style={[styles.simulateOverlayButton, { marginTop: 24 }]}
+                style={[styles.simulateOverlayButton, styles.loadingActionButton]}
                 onPress={handleSimulateCapture}
               >
                 <Text style={styles.simulateOverlayButtonText}>
@@ -155,7 +175,7 @@ export default function RegisterEmployeeScreen() {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.cancelOverlayButton, { marginTop: 12 }]}
+                style={[styles.cancelOverlayButton, styles.loadingCancelButton]}
                 onPress={() => setIsScanning(false)}
               >
                 <Text style={styles.cancelOverlayButtonText}>Cancel</Text>
@@ -216,7 +236,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F172A',
   },
   content: {
-    padding: 24,
+    padding: 20,
+    paddingBottom: 32,
   },
   title: {
     fontSize: 22,
@@ -234,8 +255,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(30, 41, 59, 0.45)',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 20,
-    padding: 20,
+    borderRadius: 16,
+    padding: 16,
   },
   label: {
     color: '#E2E8F0',
@@ -286,7 +307,7 @@ const styles = StyleSheet.create({
   },
   simulateOverlayContainer: {
     position: 'absolute',
-    bottom: 140,
+    bottom: 24,
     left: 20,
     right: 20,
     alignItems: 'center',
@@ -312,6 +333,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     alignItems: 'center',
     width: '100%',
+  },
+  loadingActionButton: {
+    marginTop: 24,
+  },
+  loadingCancelButton: {
+    marginTop: 12,
   },
   cancelOverlayButtonText: {
     color: '#FFFFFF',
