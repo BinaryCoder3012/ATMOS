@@ -145,7 +145,10 @@ export default function RegisterEmployeeScreen() {
             <View style={{ flex: 1, backgroundColor: '#0F172A', justifyContent: 'center', alignItems: 'center' }}>
               <CameraPermissionPrompt
                 status={cameraPermission}
-                onRequestPermission={requestCameraPermission}
+                onRequestPermission={async () => {
+                  const result = await requestCameraPermission();
+                  return result === 'granted';
+                }}
               />
               <TouchableOpacity
                 style={[styles.cancelOverlayButton, { marginBottom: 40 }]}

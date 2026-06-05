@@ -259,7 +259,8 @@ export default function AuthenticateScreen() {
         return;
       }
       setIsProcessing(true);
-      const simScore = 0.88;
+      // Generate random score between 0.88 and 0.97
+      const simScore = parseFloat((Math.random() * (0.97 - 0.88) + 0.88).toFixed(4));
       const marks = { ...timingRef.current, end: Date.now() };
       setTimeout(() => {
         setIsProcessing(false);
