@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import {
   View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator,
 } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera, useCameraDevice, useFrameProcessor } from 'react-native-vision-camera';
 import { NitroModules } from 'react-native-nitro-modules';
-import { runOnJS } from 'react-native-reanimated';
+import { useRunOnJS } from 'react-native-worklets-core';
 import { registerEmployee } from '../storage/employeeStore';
 import { usePermissions } from '../hooks/usePermissions';
 import { useModels } from '../hooks/useModels';
@@ -24,6 +24,8 @@ export default function RegisterEmployeeScreen() {
 
   const [isScanning, setIsScanning] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const cameraRef = useRef<Camera>(null);
 
   const frontDevice = useCameraDevice('front');
   const backDevice = useCameraDevice('back');
@@ -47,9 +49,22 @@ export default function RegisterEmployeeScreen() {
     }
   }, [isScanning, requestCameraPermission]);
 
-  const completeEnrollment = useCallback((embedding: number[]) => {
+  const completeEnrollment = useCallback(async (embedding: number[]) => {
     if (isProcessing) return;
     setIsProcessing(true);
+
+    let photoUri = undefined;
+    try {
+      if (cameraRef.current) {
+        console.log('[RegisterEmployeeScreen] Snapping baseline photograph...');
+        const photo = await cameraRef.current.takePhoto();
+        photoUri = 'file://' + photo.path;
+        console.log('[RegisterEmployeeScreen] Snapped photo path:', photoUri);
+      }
+    } catch (e: any) {
+      console.error('[RegisterEmployeeScreen] Failed to take photo:', e?.message || e);
+    }
+
     setIsScanning(false);
 
     registerEmployee({
@@ -57,6 +72,7 @@ export default function RegisterEmployeeScreen() {
       employeeCode,
       department,
       embedding,
+      photoUri,
     });
 
     setIsProcessing(false);
@@ -67,6 +83,8 @@ export default function RegisterEmployeeScreen() {
       [{ text: 'OK', onPress: () => navigation.goBack() }]
     );
   }, [name, employeeCode, department, isProcessing, navigation]);
+
+  const completeEnrollmentJS = useRunOnJS(completeEnrollment, [completeEnrollment]);
 
   const frameProcessor = useFrameProcessor(
     frame => {
@@ -95,14 +113,14 @@ export default function RegisterEmployeeScreen() {
 
           if (recOutputs && recOutputs.length > 0) {
             const embedding = Array.from(new Float32Array(recOutputs[0]));
-            runOnJS(completeEnrollment)(embedding);
+            completeEnrollmentJS(embedding);
           }
         }
       } catch {
         // Fail silently in worklet loop
       }
     },
-    [boxedFaceRecognition, boxedFaceLandmark, completeEnrollment]
+    [boxedFaceRecognition, boxedFaceLandmark, completeEnrollmentJS]
   );
 
   const handleRegisterPress = () => {
@@ -139,9 +157,11 @@ export default function RegisterEmployeeScreen() {
           ) : cameraPermission === 'granted' && device && isLoaded ? (
             <View style={StyleSheet.absoluteFill}>
               <Camera
+                ref={cameraRef}
+                photo={true}
                 style={StyleSheet.absoluteFill}
                 device={device}
-                isActive={isFocused && isScanning && !isProcessing}
+                isActive={isFocused && isScanning}
                 frameProcessor={frameProcessor}
                 pixelFormat="rgb"
               />
