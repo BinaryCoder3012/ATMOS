@@ -314,7 +314,10 @@ export default function AuthenticateScreen() {
             {cameraPermission !== 'granted' && cameraPermission !== 'loading' ? (
               <CameraPermissionPrompt
                 status={cameraPermission}
-                onRequestPermission={requestCameraPermission}
+                onRequestPermission={async () => {
+                  const result = await requestCameraPermission();
+                  return result === 'granted';
+                }}
               />
             ) : cameraPermission === 'granted' && device ? (
               isLoaded ? (
