@@ -37,7 +37,9 @@ def get_dataloaders(dataset_dir, batch_size=64, num_workers=4, balanced_train=Tr
         transforms.Resize((112, 112)),
         transforms.RandomHorizontalFlip(),
         transforms.RandomRotation(15),
-        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
+        transforms.ColorJitter(brightness=0.4, contrast=0.4, saturation=0.3, hue=0.1),
+        transforms.RandomGrayscale(p=0.05),
+        transforms.RandomAdjustSharpness(sharpness_factor=2, p=0.3),
         transforms.ToTensor(),
         transforms.Normalize(mean=mean, std=std)
     ])
