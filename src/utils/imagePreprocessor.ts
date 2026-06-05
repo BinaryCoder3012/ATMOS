@@ -35,15 +35,20 @@ export function preprocessFrame(
   const xRatio = minDim / dstWidth;
   const yRatio = minDim / dstHeight;
 
-  // 2. Nearest-neighbor resize and channel copy
+  // 2. Nearest-neighbor resize and channel copy (optimized with bitwise floor and cached calculations)
+  const startX_val = startX;
+  const startY_val = startY;
   for (let y = 0; y < dstHeight; y++) {
-    for (let x = 0; x < dstWidth; x++) {
-      // Map back to center-cropped source space
-      const px = startX + Math.floor(x * xRatio);
-      const py = startY + Math.floor(y * yRatio);
+    const py = (startY_val + (y * yRatio)) | 0;
+    const py_srcWidth = py * srcWidth;
+    const y_dstWidth = y * dstWidth;
 
-      const srcIdx = (py * srcWidth + px) * srcChannels;
-      const dstIdx = (y * dstWidth + x) * dstChannels;
+    for (let x = 0; x < dstWidth; x++) {
+      // Bitwise OR 0 is equivalent to Math.floor for non-negative indices but executes significantly faster
+      const px = (startX_val + (x * xRatio)) | 0;
+
+      const srcIdx = (py_srcWidth + px) * srcChannels;
+      const dstIdx = (y_dstWidth + x) * dstChannels;
 
       // Extract RGB channels
       dstBytes[dstIdx] = srcBytes[srcIdx];         // R
@@ -68,12 +73,15 @@ export function normalizeFrame(
 ): Float32Array {
   const normalized = new Float32Array(rgbBytes.length);
   if (useFloatRange) {
+    const inv255 = 1.0 / 255.0;
     for (let i = 0; i < rgbBytes.length; i++) {
-      normalized[i] = rgbBytes[i] / 255.0;
+      normalized[i] = rgbBytes[i] * inv255;
     }
   } else {
+    // Precalculate division as multiplication (standard division is a slow CPU instruction)
+    const invStd = 1.0 / std;
     for (let i = 0; i < rgbBytes.length; i++) {
-      normalized[i] = (rgbBytes[i] - mean) / std;
+      normalized[i] = (rgbBytes[i] - mean) * invStd;
     }
   }
   return normalized;
