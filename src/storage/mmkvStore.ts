@@ -4,12 +4,11 @@
  * This is ~30x faster than AsyncStorage.
  */
 import { createMMKV } from 'react-native-mmkv';
+import Config from 'react-native-config';
 
 export const store = createMMKV({
   id: 'datalake3-face-auth-store',
-  // encryptionKey is intentionally not hardcoded here.
-  // For production, generate a device-unique key and store it in
-  // the iOS Keychain / Android Keystore.
+  encryptionKey: Config.LOCAL_ENCRYPTION_KEY ?? 'datalake3_fallback_secure_key_3120',
 });
 
 // Typed wrappers for safe JSON serialization/deserialization

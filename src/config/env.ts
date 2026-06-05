@@ -6,7 +6,10 @@
 import Config from 'react-native-config';
 import { createMMKV } from 'react-native-mmkv';
 
-const configStore = createMMKV({ id: 'datalake3-face-auth-config' });
+const configStore = createMMKV({
+  id: 'datalake3-face-auth-config',
+  encryptionKey: Config.LOCAL_ENCRYPTION_KEY ?? 'datalake3_fallback_secure_key_3120',
+});
 
 export const ENV = {
   get AWS_SYNC_ENDPOINT() {
