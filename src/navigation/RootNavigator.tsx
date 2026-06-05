@@ -1,11 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../screens/SplashScreen';
-import HomeScreen from '../screens/HomeScreen';
-import AuthenticateScreen from '../screens/AuthenticateScreen';
+import MainTabNavigator from './MainTabNavigator';
 import RegisterEmployeeScreen from '../screens/RegisterEmployeeScreen';
-import AdminNavigator from './AdminNavigator';
-import SettingsScreen from '../screens/SettingsScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -33,29 +30,14 @@ export default function RootNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Home"
-        component={HomeScreen}
+        name="MainTabs"
+        component={MainTabNavigator}
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Authenticate"
-        component={AuthenticateScreen}
-        options={{ title: 'Offline Authenticate' }}
       />
       <Stack.Screen
         name="RegisterEmployee"
         component={RegisterEmployeeScreen}
         options={{ title: 'Register Employee' }}
-      />
-      <Stack.Screen
-        name="Admin"
-        component={AdminNavigator}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{ title: 'System Settings' }}
       />
     </Stack.Navigator>
   );
