@@ -124,10 +124,18 @@ export default function RegisterEmployeeScreen() {
       <View style={styles.container}>
         <View style={styles.cameraContainer}>
           {cameraPermission !== 'granted' && cameraPermission !== 'loading' ? (
-            <CameraPermissionPrompt
-              status={cameraPermission}
-              onRequestPermission={requestCameraPermission}
-            />
+            <View style={{ flex: 1, backgroundColor: '#0F172A', justifyContent: 'center', alignItems: 'center' }}>
+              <CameraPermissionPrompt
+                status={cameraPermission}
+                onRequestPermission={requestCameraPermission}
+              />
+              <TouchableOpacity
+                style={[styles.cancelOverlayButton, { marginBottom: 40 }]}
+                onPress={() => setIsScanning(false)}
+              >
+                <Text style={styles.cancelOverlayButtonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           ) : cameraPermission === 'granted' && device && isLoaded ? (
             <View style={StyleSheet.absoluteFill}>
               <Camera
@@ -341,6 +349,44 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   cancelOverlayButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  permissionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+    backgroundColor: '#0F172A',
+  },
+  permissionEmoji: {
+    fontSize: 48,
+    marginBottom: 20,
+  },
+  permissionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  permissionDesc: {
+    fontSize: 14,
+    color: '#94A3B8',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 30,
+  },
+  permissionButton: {
+    backgroundColor: '#6366F1',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    alignItems: 'center',
+    width: '100%',
+  },
+  permissionButtonText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 14,

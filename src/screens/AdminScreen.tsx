@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import { getAllEmployees, deleteEmployee } from '../storage/employeeStore';
 import EmployeeCard from '../components/EmployeeCard';

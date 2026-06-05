@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Platform } from 'react-native';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { check, request, PERMISSIONS, RESULTS, openSettings } from 'react-native-permissions';
 
 export type CameraPermissionStatus =
   | 'granted'
@@ -46,19 +46,28 @@ export function usePermissions() {
       switch (result) {
         case RESULTS.GRANTED:
           setCameraPermission('granted');
-          return true;
+          return 'granted';
         case RESULTS.BLOCKED:
           setCameraPermission('blocked');
-          return false;
-        case RESULTS.UNAVAILABLE:
-          setCameraPermission('unavailable');
-          return false;
-        default:
+          return 'blocked';
+        case RESULTS.DENIED:
           setCameraPermission('denied');
-          return false;
+          return 'denied';
+        default:
+          setCameraPermission('unavailable');
+          return 'unavailable';
       }
     } catch {
       setCameraPermission('denied');
+      return 'denied';
+    }
+  }, []);
+
+  const handleOpenSettings = useCallback(async () => {
+    try {
+      await openSettings();
+      return true;
+    } catch {
       return false;
     }
   }, []);
@@ -71,5 +80,6 @@ export function usePermissions() {
     cameraPermission,
     checkCameraPermission,
     requestCameraPermission,
+    openSettings: handleOpenSettings,
   };
 }
