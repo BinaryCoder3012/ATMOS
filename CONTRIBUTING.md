@@ -22,7 +22,8 @@ graph TD
     I -->|Match Found| K[Log Attendance to MMKV]
     K -->|syncStatus: 'pending'| L[NetInfo Network Listener]
     L -->|Connection Restored| M[Batch POST to AWS API Gateway]
-    M -->|HTTP 200 OK Confirmed| N[Purge Records from MMKV]
+    M -->|HTTP 200 OK Confirmed| N[Update MMKV status to 'synced']
+    N --> O[Prune logs older than 30 days]
 ```
 
 ### 1. Zero-Latency C++ JSI Camera Loop
@@ -54,7 +55,7 @@ $$\text{Similarity} = \frac{A \cdot B}{\|A\| \|B\|}$$
 ### 5. Resilient Local MMKV Sync Queue
 * **High-Speed Store:** Instead of slow asynchronous databases, A.T.M.O.S utilizes `react-native-mmkv`—a synchronous C++ key-value engine (~30x faster than AsyncStorage).
 * **Sync Mechanism:** Attendance records are locally saved with a `syncStatus: 'pending'` flag. 
-* **Conditional Purging:** A `NetInfo` hook monitors network status. When internet is restored, all pending records are batch-posted to the centralized AWS API Gateway. To guarantee complete audit safety, records are **never purged** locally until the server responds with a confirmed `200 OK` HTTP status.
+* **State Retention & Pruning:** A `NetInfo` hook monitors network status. When internet is restored, all pending records are batch-posted to the centralized AWS API Gateway. Upon successful sync (HTTP 200 OK), records are marked as `'synced'` in MMKV so they are retained in the local UI logs history. Records older than 30 days are automatically pruned from the device to conserve disk space.
 
 ---
 
