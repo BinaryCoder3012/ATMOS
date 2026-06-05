@@ -98,3 +98,8 @@ ml/training/checkpoints/
 
 # TensorBoard logs
 runs/
+
+# Android bundle resources
+android/app/src/main/assets/index.android.bundle
+android/app/src/main/res/drawable-*/
+android/app/src/main/res/raw/
