@@ -16,7 +16,7 @@ import { generateSimpleUUID } from '../storage/employeeStore';
 import { ENV } from '../config/env';
 import { store, storeJSON, loadJSON } from '../storage/mmkvStore';
 import { STORAGE_KEYS } from '../constants';
-import type { AttendanceRecord, SyncPayload, SyncResponse } from '../types';
+import type { AttendanceRecord, SyncPayload } from '../types';
 
 class SyncManagerService {
   private unsubscribeNetInfo: (() => void) | null = null;
@@ -78,7 +78,7 @@ class SyncManagerService {
     const list = loadJSON<string[]>(STORAGE_KEYS.ATTENDANCE_LIST) ?? [];
     return list
       .map(id => loadJSON<AttendanceRecord>(`${STORAGE_KEYS.ATTENDANCE_PREFIX}${id}`))
-      .filter((r): r is AttendanceRecord => r !== null && r.syncStatus === 'pending');
+      .filter((r): r is AttendanceRecord => r !== null && (r.syncStatus === 'pending' || r.syncStatus === 'failed'));
   }
 
   /** Get all attendance records (for display in logs screen) */
@@ -127,15 +127,18 @@ class SyncManagerService {
       });
 
       if (response.status === 200) {
-        // ── CONDITIONAL PURGE: ONLY on confirmed 200 OK ──
+        // Mark records as successfully synced locally
         const syncedIds = pending.map(r => r.id);
-        this.purgeRecords(syncedIds);
+        this.markRecordsAsSynced(syncedIds);
+
+        // Prune synced records older than 30 days to save space
+        this.pruneSyncedRecords(30);
 
         store.set(STORAGE_KEYS.LAST_SYNC_AT, new Date().toISOString());
-        console.log(`[SyncManager] ✅ Synced and purged ${syncedIds.length} records.`);
+        console.log(`[SyncManager] ✅ Synced ${syncedIds.length} records.`);
         return { synced: syncedIds.length, failed: 0 };
       } else {
-        console.error(`[SyncManager] ❌ Server returned ${response.status}. Records NOT purged.`);
+        console.error(`[SyncManager] ❌ Server returned ${response.status}. Records NOT updated.`);
         this.markRecordsAsFailed(pending.map(r => r.id));
         return { synced: 0, failed: pending.length };
       }
@@ -147,13 +150,42 @@ class SyncManagerService {
     }
   }
 
-  /** Delete specific records by ID after confirmed sync */
-  private purgeRecords(ids: string[]): void {
+  /** Mark specific records by ID as synced */
+  private markRecordsAsSynced(ids: string[]): void {
     for (const id of ids) {
-      store.remove(`${STORAGE_KEYS.ATTENDANCE_PREFIX}${id}`);
+      const record = loadJSON<AttendanceRecord>(`${STORAGE_KEYS.ATTENDANCE_PREFIX}${id}`);
+      if (record) {
+        storeJSON(`${STORAGE_KEYS.ATTENDANCE_PREFIX}${id}`, {
+          ...record,
+          syncStatus: 'synced',
+          syncAttemptedAt: new Date().toISOString(),
+        });
+      }
     }
+  }
+
+  /** Prune synced records older than the specified retention window (default 30 days) */
+  public pruneSyncedRecords(daysToKeep: number = 30): void {
     const list = loadJSON<string[]>(STORAGE_KEYS.ATTENDANCE_LIST) ?? [];
-    storeJSON(STORAGE_KEYS.ATTENDANCE_LIST, list.filter(id => !ids.includes(id)));
+    const now = Date.now();
+    const thresholdMs = daysToKeep * 24 * 60 * 60 * 1000;
+    const idsToKeep: string[] = [];
+
+    for (const id of list) {
+      const record = loadJSON<AttendanceRecord>(`${STORAGE_KEYS.ATTENDANCE_PREFIX}${id}`);
+      if (record) {
+        const recordAgeMs = now - new Date(record.timestamp).getTime();
+        // If it is synced and older than the threshold, delete it from storage
+        if (record.syncStatus === 'synced' && recordAgeMs > thresholdMs) {
+          store.remove(`${STORAGE_KEYS.ATTENDANCE_PREFIX}${id}`);
+          console.log(`[SyncManager] Pruned old synced record: ${id}`);
+        } else {
+          idsToKeep.push(id);
+        }
+      }
+    }
+
+    storeJSON(STORAGE_KEYS.ATTENDANCE_LIST, idsToKeep);
   }
 
   /** Mark records as failed (keeps them in queue for retry) */
