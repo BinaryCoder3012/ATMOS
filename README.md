@@ -69,11 +69,11 @@ c:\Users\laksh\Desktop\ATMOS\DataLake3FaceAuth
 │   ├── screens/               # Screen definitions:
 │   │   ├── SplashScreen.tsx   # Loading and Model Validation screen
 │   │   ├── HomeScreen.tsx     # Dashboard & System State Overview
-│   │   ├── AuthScreen.tsx     # Live/Simulated Face Auth pipeline
-│   │   ├── RegisterScreen.tsx # Multi-pose Employee Registration
-│   │   ├── LogsScreen.tsx     # Offline telemetry audit log viewer
+│   │   ├── AuthenticateScreen.tsx # Live/Simulated Face Auth pipeline
+│   │   ├── RegisterEmployeeScreen.tsx # Multi-pose Employee Registration
+│   │   ├── AttendanceLogScreen.tsx # Offline telemetry audit log viewer
 │   │   └── SettingsScreen.tsx # API gateway config & MMKV database wipes
-│   └── store/                 # Global state management using MMKV keys
+│   └── storage/               # Global state management using MMKV keys
 ├── ui-preview.html            # Complete, high-fidelity interactive browser simulator
 └── package.json               # JavaScript dependencies and scripts
 ```
