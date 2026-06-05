@@ -84,6 +84,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        ndk {
+            // Restrict to modern 64-bit architectures to fix the Ninja
+            // "build.ninja still dirty after 100 tries" error caused by
+            // building too many ABIs in parallel with native modules.
+            abiFilters "arm64-v8a", "x86_64"
+        }
     }
     signingConfigs {
         debug {

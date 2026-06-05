@@ -14,7 +14,6 @@
 import { calculateAverageEAR } from '../utils/earCalculator';
 import { calculateMAR } from '../utils/marCalculator';
 import { findBestMatch } from '../utils/cosineSimilarity';
-import { getEmbeddingsForMatching } from '../storage/employeeStore';
 import { MODEL_INPUT } from '../constants';
 import { ENV } from '../config/env';
 import type { Landmark } from '../types';
@@ -59,7 +58,8 @@ export function parseLandmarks(output: Float32Array): Landmark[] {
 export function runAuthPipeline(
   landmarkOutput: Float32Array,
   recognitionOutput: Float32Array,
-  isLivenessAlreadyConfirmed: boolean
+  isLivenessAlreadyConfirmed: boolean,
+  storedEmbeddings: Array<{ id: string; embedding: number[] }>
 ): {
   ear: number;
   mar: number;
@@ -79,12 +79,11 @@ export function runAuthPipeline(
   let embedding: number[] | null = null;
   let matchResult: { id: string; score: number } | null = null;
 
-  if (isLivenessAlreadyConfirmed) {
+  if (isLivenessAlreadyConfirmed && storedEmbeddings && storedEmbeddings.length > 0) {
     // Extract 128-dim embedding from face recognition model output
     embedding = Array.from(recognitionOutput);
 
     // Compare against all stored employee embeddings
-    const storedEmbeddings = getEmbeddingsForMatching();
     matchResult = findBestMatch(embedding, storedEmbeddings, ENV.SIMILARITY_THRESHOLD);
   }
 

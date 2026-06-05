@@ -26,7 +26,8 @@ import {
   Camera, useCameraDevice, useFrameProcessor,
 } from 'react-native-vision-camera';
 import { NitroModules } from 'react-native-nitro-modules';
-import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import { useSharedValue } from 'react-native-reanimated';
+import { useRunOnJS } from 'react-native-worklets-core';
 import { useModels } from '../hooks/useModels';
 import { usePermissions } from '../hooks/usePermissions';
 import { useLiveness } from '../hooks/useLiveness';
@@ -105,13 +106,18 @@ export default function AuthenticateScreen() {
   // accessible inside the 'worklet' frame processor (runs on UI thread).
   const lastFrameTime = useSharedValue<number>(0);
 
+  // Shared value to hold embeddings for worklet access
+  const storedEmbeddingsShared = useSharedValue<Array<{ id: string; embedding: number[] }>>([]);
+
   const loadData = useCallback(() => {
     const list = getAllEmployees();
     setRegisteredEmployees(list);
     if (list.length > 0) {
       setSelectedSimEmployee(list[0]);
     }
-  }, []);
+    // Update worklet-safe shared value
+    storedEmbeddingsShared.value = list.map(e => ({ id: e.id, embedding: e.embedding }));
+  }, [storedEmbeddingsShared]);
 
   useEffect(() => {
     requestCameraPermission();
@@ -151,6 +157,7 @@ export default function AuthenticateScreen() {
             timestamp: new Date().toISOString(),
             livenessMethod: result.livenessMethod ?? 'blink',
             similarityScore: result.similarityScore ?? 0,
+            photoUri: employee.photoUri,
           });
           logAuthBenchmark(marks);
           return;
@@ -166,6 +173,11 @@ export default function AuthenticateScreen() {
     },
     [isProcessing, livenessState.method],
   );
+
+  const updateMetricsJS = useRunOnJS(updateMetrics, [updateMetrics]);
+  const confirmBlinkJS = useRunOnJS(confirmBlink, [confirmBlink]);
+  const confirmSmileJS = useRunOnJS(confirmSmile, [confirmSmile]);
+  const completeAuthJS = useRunOnJS(completeAuth, [completeAuth]);
 
   // JSI Worklet Frame Processor — throttled to FRAME_SKIP_MS
   const frameProcessor = useFrameProcessor(
@@ -207,23 +219,24 @@ export default function AuthenticateScreen() {
           const pipelineResult = runAuthPipeline(
             landmarksFloat,
             recOutput,
-            livenessState.isComplete
+            livenessState.isComplete,
+            storedEmbeddingsShared.value
           );
 
-          runOnJS(updateMetrics)(pipelineResult.ear, pipelineResult.mar);
+          updateMetricsJS(pipelineResult.ear, pipelineResult.mar);
 
-          if (pipelineResult.blinkDetected) runOnJS(confirmBlink)();
-          if (pipelineResult.smileDetected) runOnJS(confirmSmile)();
+          if (pipelineResult.blinkDetected) confirmBlinkJS();
+          if (pipelineResult.smileDetected) confirmSmileJS();
 
           if (livenessState.isComplete && pipelineResult.embedding && pipelineResult.matchResult) {
-            runOnJS(completeAuth)(pipelineResult.embedding, pipelineResult.matchResult);
+            completeAuthJS(pipelineResult.embedding, pipelineResult.matchResult);
           }
         }
       } catch {
         // Fail silently in worklet loop — never crash the frame processor thread
       }
     },
-    [boxedFaceRecognition, boxedFaceLandmark, livenessState, confirmBlink, confirmSmile, updateMetrics, completeAuth, lastFrameTime],
+    [boxedFaceRecognition, boxedFaceLandmark, livenessState, confirmBlinkJS, confirmSmileJS, updateMetricsJS, completeAuthJS, lastFrameTime, storedEmbeddingsShared],
   );
 
   // Simulated triggers for demo/emulator
@@ -246,7 +259,8 @@ export default function AuthenticateScreen() {
         return;
       }
       setIsProcessing(true);
-      const simScore = 0.88;
+      // Generate random score between 0.88 and 0.97
+      const simScore = parseFloat((Math.random() * (0.97 - 0.88) + 0.88).toFixed(4));
       const marks = { ...timingRef.current, end: Date.now() };
       setTimeout(() => {
         setIsProcessing(false);
@@ -265,6 +279,7 @@ export default function AuthenticateScreen() {
           timestamp: new Date().toISOString(),
           livenessMethod: result.livenessMethod ?? 'blink',
           similarityScore: simScore,
+          photoUri: selectedSimEmployee.photoUri,
         });
       }, 300);
     }

@@ -35,6 +35,7 @@ export interface AttendanceRecord {
   similarityScore: number;     // Cosine similarity score [0, 1]
   syncStatus: 'pending' | 'synced' | 'failed';
   syncAttemptedAt?: string;    // ISO 8601 timestamp of last sync attempt
+  photoUri?: string;           // Optional: URI to registration/matched photo
 }
 
 /** AWS sync request payload */
