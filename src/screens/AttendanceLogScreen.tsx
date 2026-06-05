@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useSyncManager } from '../hooks/useSyncManager';
 import type { AttendanceRecord } from '../types';
 
@@ -12,35 +12,50 @@ export default function AttendanceLogScreen() {
 
     return (
       <View style={styles.logCard}>
-        <View style={styles.logHeader}>
-          <Text style={styles.logName}>{item.employeeName}</Text>
-          <View
-            style={[
-              styles.syncIndicator,
-              isSynced ? styles.syncedBg : isFailed ? styles.failedBg : styles.pendingBg,
-            ]}
-          >
-            <Text
-              style={[
-                styles.syncText,
-                isSynced ? styles.syncedText : isFailed ? styles.failedText : styles.pendingText,
-              ]}
-            >
-              {item.syncStatus.toUpperCase()}
+        <View style={styles.logCardContent}>
+          <View style={styles.avatarContainer}>
+            {item.photoUri ? (
+              <Image source={{ uri: item.photoUri }} style={styles.logAvatar} />
+            ) : (
+              <View style={styles.placeholderAvatar}>
+                <Text style={styles.placeholderText}>
+                  {item.employeeName.substring(0, 2).toUpperCase()}
+                </Text>
+              </View>
+            )}
+          </View>
+          <View style={styles.logInfo}>
+            <View style={styles.logHeader}>
+              <Text style={styles.logName} numberOfLines={1}>{item.employeeName}</Text>
+              <View
+                style={[
+                  styles.syncIndicator,
+                  isSynced ? styles.syncedBg : isFailed ? styles.failedBg : styles.pendingBg,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.syncText,
+                    isSynced ? styles.syncedText : isFailed ? styles.failedText : styles.pendingText,
+                  ]}
+                >
+                  {item.syncStatus.toUpperCase()}
+                </Text>
+              </View>
+            </View>
+
+            <Text style={styles.logDetail}>Code: {item.employeeCode}</Text>
+            <Text style={styles.logDetail}>
+              Time: {new Date(item.timestamp).toLocaleString()}
+            </Text>
+            <Text style={styles.logDetail}>
+              Liveness: {item.livenessMethod === 'blink' ? 'Blink Challenge' : 'Smile Challenge'}
+            </Text>
+            <Text style={styles.logDetail}>
+              Score: {(item.similarityScore * 100).toFixed(1)}% match similarity
             </Text>
           </View>
         </View>
-
-        <Text style={styles.logDetail}>Code: {item.employeeCode}</Text>
-        <Text style={styles.logDetail}>
-          Time: {new Date(item.timestamp).toLocaleString()}
-        </Text>
-        <Text style={styles.logDetail}>
-          Liveness challenge: {item.livenessMethod === 'blink' ? 'Blink Challenge' : 'Smile Challenge'}
-        </Text>
-        <Text style={styles.logDetail}>
-          Score: {(item.similarityScore * 100).toFixed(1)}% match similarity
-        </Text>
       </View>
     );
   };
@@ -145,7 +160,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     flex: 1,
-    minWidth: 160,
   },
   syncIndicator: {
     paddingVertical: 3,
@@ -194,5 +208,34 @@ const styles = StyleSheet.create({
   emptyText: {
     color: '#94A3B8',
     fontSize: 14,
+  },
+  logCardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatarContainer: {
+    marginRight: 16,
+  },
+  logAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(99, 102, 241, 0.15)',
+  },
+  placeholderAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(99, 102, 241, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholderText: {
+    color: '#818CF8',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  logInfo: {
+    flex: 1,
   },
 });

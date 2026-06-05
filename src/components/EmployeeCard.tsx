@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import type { Employee } from '../types';
 
 interface EmployeeCardProps {
@@ -11,9 +11,13 @@ export default function EmployeeCard({ employee, onDelete }: EmployeeCardProps) 
   return (
     <View style={styles.card}>
       <View style={styles.avatar}>
-        <Text style={styles.avatarText}>
-          {employee.name.substring(0, 2).toUpperCase()}
-        </Text>
+        {employee.photoUri ? (
+          <Image source={{ uri: employee.photoUri }} style={styles.avatarImage} />
+        ) : (
+          <Text style={styles.avatarText}>
+            {employee.name.substring(0, 2).toUpperCase()}
+          </Text>
+        )}
       </View>
       <View style={styles.info}>
         <Text style={styles.name}>{employee.name}</Text>
@@ -52,6 +56,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: '100%',
+    height: '100%',
   },
   avatarText: {
     color: '#818CF8',
