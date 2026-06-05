@@ -13,12 +13,11 @@
  */
 import { calculateAverageEAR } from '../utils/earCalculator';
 import { calculateMAR } from '../utils/marCalculator';
-import { calculateCosineSimilarity, findBestMatch } from '../utils/cosineSimilarity';
+import { findBestMatch } from '../utils/cosineSimilarity';
 import { getEmbeddingsForMatching } from '../storage/employeeStore';
 import { MODEL_INPUT } from '../constants';
 import { ENV } from '../config/env';
-import type { AuthResult, Landmark } from '../types';
-import { createTimingMarks, logAuthBenchmark } from '../utils/logger';
+import type { Landmark } from '../types';
 
 /**
  * Normalize a flat pixel array for MobileFaceNet input.
@@ -27,6 +26,7 @@ import { createTimingMarks, logAuthBenchmark } from '../utils/logger';
  * Output: Float32Array of normalized values in [-1, +1]
  */
 export function normalizeFrameForFaceNet(rawPixels: Uint8Array): Float32Array {
+  'worklet';
   const normalized = new Float32Array(rawPixels.length);
   for (let i = 0; i < rawPixels.length; i++) {
     normalized[i] = (rawPixels[i] - MODEL_INPUT.MEAN) / MODEL_INPUT.STD;
@@ -40,6 +40,7 @@ export function normalizeFrameForFaceNet(rawPixels: Uint8Array): Float32Array {
  * MediaPipe outputs 478 landmarks * 3 coordinates = 1,434 float values.
  */
 export function parseLandmarks(output: Float32Array): Landmark[] {
+  'worklet';
   const landmarks: Landmark[] = [];
   for (let i = 0; i < output.length; i += 3) {
     landmarks.push({ x: output[i], y: output[i + 1], z: output[i + 2] });
@@ -67,6 +68,7 @@ export function runAuthPipeline(
   embedding: number[] | null;
   matchResult: { id: string; score: number } | null;
 } {
+  'worklet';
   const landmarks = parseLandmarks(landmarkOutput);
   const ear = calculateAverageEAR(landmarks);
   const mar = calculateMAR(landmarks);
