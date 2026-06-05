@@ -28,33 +28,16 @@ export interface ModelsState {
   error: string | null;
 }
 
-export function useModels(enabled: boolean = true): ModelsState {
-  const recSource = useMemo(
-    () =>
-      enabled
-        ? Platform.OS === 'android'
-          ? { url: 'file:///android_asset/mobilefacenet_int8.tflite' }
-          : REC_MODEL_IOS
-        : DISABLED_SOURCE,
-    [enabled],
+export function useModels() : ModelsState {
+  const faceRecognitionModel = useTensorflowModel(
+    require('../../android/app/src/main/assets/mobilefacenet_int8.tflite'),
+    []
   );
-  const lmSource = useMemo(
-    () =>
-      enabled
-        ? Platform.OS === 'android'
-          ? { url: 'file:///android_asset/face_landmark.tflite' }
-          : LM_MODEL_IOS
-        : DISABLED_SOURCE,
-    [enabled],
+  const faceLandmarkModel = useTensorflowModel(
+    require('../../android/app/src/main/assets/face_landmark.tflite'),
+    []
   );
 
-  // react-native-fast-tflite v3 requires the delegates array as 2nd argument
-  const faceRecognitionModel = useTensorflowModel(recSource, []);
-  const faceLandmarkModel = useTensorflowModel(lmSource, []);
-
-  if (!enabled) {
-    return { faceRecognitionModel: null, faceLandmarkModel: null, isLoaded: false, error: null };
-  }
 
   const isLoaded =
     faceRecognitionModel.state === 'loaded' &&

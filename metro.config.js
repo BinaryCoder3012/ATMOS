@@ -21,7 +21,7 @@ const config = {
       /android\/build\/.*/,
     ],
   },
-  watchFolders: [],
+  watchFolders: [path.resolve(__dirname, './models')],
 };
 
 module.exports = mergeConfig(defaultConfig, config);
