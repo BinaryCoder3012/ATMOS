@@ -27,12 +27,12 @@ export default function SplashScreen() {
           }
         }
 
-        // Navigate to Home screen and reset navigation stack
+        // Navigate to MainTabs and reset navigation stack
         const timer = setTimeout(() => {
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [{ name: 'Home' }],
+              routes: [{ name: 'MainTabs' }],
             })
           );
         }, 1500);
